@@ -1,0 +1,19 @@
+PASS Heavy attack deals damage after windup
+PASS Safe test target did not damage player
+PASS Stage 2 opens adaptation and pauses
+PASS Enemy simulation stops during selection
+PASS Choice applies and resumes
+PASS Both right-arm tattoos active before severe injury
+PASS Severe arm injury disables ALL arm tattoos
+PASS Other body part tattoo remains active
+PASS Severe arm penalties intensified
+PASS Disabled blood tattoo cannot heal on kill
+PASS New run resets injury and restores tattoos
+PASS Front parry prevents injury and staggers enemy
+PASS Forward dodge avoids hit and trauma
+PASS Severe leg injury disables charge tattoo and slows movement
+PASS Fatal injury produces death without orphaned selection
+PASS Player simulation stops after death
+PASS Large nonfatal hit still offers adaptation
+PASS Selection cannot restore severely injured tattoos or bypass penalties
+PASS All three encounters lead to victory

@@ -1,0 +1,26 @@
+Both files look correct. Here's the report.
+
+## Report
+
+**Fighters.cs** (only readonly properties added, no behavior changed)
+- `Barbarian.AttackElapsed`: `attackLength - attackTimer` while `Attacking`, else `0`.
+- `Barbarian.AttackRecoveryProgress`: `0` until elapsed passes `impactAt`, then normalized progress over the already-scaled `attackLength - impactAt` (this denominator is the *cached* recovery duration, since `attackLength` was baked with `RecoveryMultiplier` at `Attack()` time, not re-read live).
+- No existing fields, timers, or methods touched.
+
+**PaintedCombatVisual.cs** (sole owned file)
+- Added `axePivot` reference (captured unconditionally, not just when the painted axe sprite loads), `heavyFrames[]`, `hasHeavyCycle`, `heavyFrame` (-1 inactive), and public `HasHeavyCycle`/`HeavyFrame`.
+- Optional load of `Resources/Art/BarbarianHeavy-v1`, 3×2 grid, 512px cells, same top-left row mapping convention as the walk sheet (`row = i<3 ? 1 : 0` for Unity's bottom-origin Rect space). Uniform pivot `(.5, .08)`, PPU `cellHeight*.70/2.18`. Missing asset → `hasHeavyCycle=false`, full legacy fallback preserved.
+- `UpdateHeavyCycle()`: active only when `hero.Attacking && hero.heavy && Game.I.phase==Phase.Combat`; hides `axePivot` while active, restores it the instant it isn't; maps frames per spec (`<.14→0, <.30→1, <.43→2`, else by `AttackRecoveryProgress: <.2→3, <.55→4, else 5`).
+- `LateUpdate` now distinguishes:
+  - `Game.I.paused || Game.I.choice.HasValue` → full exact freeze, no heavy/walk update at all.
+  - `Game.I.Frozen` otherwise (hitstop) → anchors held, walking skipped, but `UpdateHeavyCycle()` still runs so an impact-frame hitstop lands on frame 3 (from `AttackElapsed/AttackRecoveryProgress`, which don't advance since timers are frozen) instead of holding a stale windup frame.
+  - Normal frames: heavy sheet takes priority — generic lean/bob/scale pulse is skipped while `HeavyActive`, then `UpdateWalkCycle()` then `UpdateHeavyCycle()` run in that order so heavy overrides walk's sprite choice (walk can't run during `Attacking` anyway, so no real conflict).
+- `OnDisable()` restores `axePivot` visibility so a destroyed/disabled component never leaves the axe permanently hidden; `OnDestroy()`'s existing owned-sprite cleanup pattern now also covers `heavyFrames`.
+- Walk cycle method body and anchor logic untouched.
+
+**Concerns for root**
+- Heavy sheet pivot/scale/frame thresholds are initial placeholders per your spec; will likely need recalibration once real art lands, same as the walk sheet's foot-pivot pass.
+- The single frame-3 hitstop pose comes from the current timer snapshot the instant `Impact()`/`HitStop()` run in the same `Update`; if script execution order ever changes (Fighters updating after this component), that guarantee would need re-verification.
+- Didn't touch README.md/AGENTS.md — leaving changelog/doc entries for whoever finalizes this with the generated art, per your "root generates art and tests" note.
+
+Codex integration: generated heavy sheet, custom sprite rectangles avoid neighboring axe-tip bleed; calibrated common scale/pivots. Fixed heavy-end body restoration and OnDisable body restoration. Verified hitstop impact frame, menu freeze, separate-axe hiding/restoration. Windows campaign238 PASS, legacy21 PASS, build rules12 PASS. Visual snapshots: Assets/Previews/heavy-windup.png and heavy-impact.png. Prompts/source/metadata: Design/heavy-art-provenance.json.

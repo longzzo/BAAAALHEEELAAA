@@ -1,0 +1,21 @@
+Created `Assets/Scripts/TattooWorldFeedback.cs` only, in namespace `Valhalla`. No other files touched.
+
+**What it does**
+- `MonoBehaviour` subscribing to `TattooSignals.Activated` in `OnEnable`, unsubscribing + calling `Clear()` in `OnDisable`.
+- On activation, ignores anything that isn't `Thunder`/`Ram`/`Reprisal`, requires `Game.I.phase == Phase.Combat` and a live `Game.I.player`, and gates on `Game.I.body.Has(power)` — so a silenced/severe-injury power produces no effect.
+- Snapshots `player.transform.position`, `player.facing`, `player.velocity` at the moment of the event only (no per-frame combat reads).
+- Geometry, each a distinct deterministic `LineRenderer` shape, no `Random`:
+  - **Thunder**: a 5-point jagged zigzag bolt in front of the hero along `facing`.
+  - **Ram**: two 3-point chevrons (`<` wing — tip — wing) built from `player.velocity.normalized` (falls back to `facing` only if velocity is ~zero, e.g. dash's very first frame), explicitly *not* derived from the enemy-facing target.
+  - **Reprisal**: a 7-point arc swept ±55° around `facing`, bulging outward from the hero as a shield/front-wave.
+- Pool: 6 pre-built `LineRenderer` GameObjects parented to this component, reused round-robin (`NextSlot`); Ram consumes 2 slots per activation, Thunder/Reprisal 1.
+- One owned `Material` (`Sprites/Default`) assigned via `sharedMaterial` to every pooled `LineRenderer` so there's exactly one material instance; destroyed in `OnDestroy`.
+- Effects fade/expire using `Time.deltaTime` (scaled), so `Time.timeScale == 0` (menu pause or hitstop) freezes them in place rather than continuing to tick.
+- Public `Clear()` empties the whole pool and resets `ActiveCount` — callable by Codex on room transitions.
+- Readonly `ActiveCount`, `LastPower`, `LastDirection` exposed for tests; they're populated as a side effect of real activations, not special-cased for testing.
+
+**Limitations / what I didn't do (per scope)**
+- Only `Thunder`/`Ram`/`Reprisal` get geometry; the other 12 `TattooPower` values intentionally produce no world feedback — not implemented, not a bug.
+- Not wired into any scene/GameObject — no `AddComponent<TattooWorldFeedback>()` call anywhere; that's integration, left to Codex.
+- `Clear()` is not called from anywhere yet (no room-change hook) — also integration.
+- I have not compiled this in the Unity editor or run any tests; I did not modify Fighters.cs/Game.cs/NordicArt.cs/TattooSignals.cs to verify compile correctness beyond reading their current public surface (`Barbarian.facing`, `.velocity`, `.transform.position`, `Game.I.phase`, `Game.I.player`, `Game.I.body.Has`, `BodyPart`/`TattooPower` enums, `NordicArt.Ice`/`NordicArt.Gold`). No automated check has run, so I'm not claiming it builds or renders correctly yet — that verification is still open.

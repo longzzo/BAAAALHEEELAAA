@@ -1,0 +1,68 @@
+{
+  "date": "2026-10-11",
+  "tool": "Built-in image_gen",
+  "asset": "Assets/Resources/Art/BarbarianHeavy-v1.png",
+  "source": "C:/Users/back1/.codex/generated_images/01a129dc-cfa0-7aa3-9177-2f344552c268/exec-2e37d970-c6c7-4712-a1d5-f327c6639b77.png",
+  "references": [
+    "Art/BarbarianConcept-v1.png",
+    "Art/Axe-v1.png"
+  ],
+  "prompt": "Use case: stylized-concept. Asset: production Unity transparent RGBA sprite sheet 1536x1024, EXACT 3 columns x2rows, six512x512 cells. Reference1 is SAME character identity: red braided hair/beard muscular tattooed Norse barbarian fur cloak leather kilt boots. Reference2 is weapon style. Make SIX consecutive frames of ONE heavy two-handed OVERHEAD AXE CHOP facing RIGHT, same orthographic 3/4 side-view, rendering style and anatomy as character reference. Include ONE axe actually grasped with both hands in each frame. Grid reading top row then bottom: (1) planted stance winding axe back low; (2) axe raised behind/above head, torso leans back; (3) peak windup axe HIGH overhead, coiled legs; (4) IMPACT axe swung fully DOWN and FORWARD to RIGHT at knee height, arms extended, body leaned forward; (5) low follow-through axe below waist on RIGHT; (6) recovering axe toward ready in front. All six MUST be different action poses, coherent single strong downward swing. No walking. Keep both boots grounded, one shared ground baseline local y470 in every cell. Head neutral standing at local y150; body alone hair tofeet about320px tall, consistent physical scale. Overhead axe fits in upper100px empty space. Pelvis center local x230 in every cell, whole silhouette including axe inside cell with minimum30px transparent gutters. Never overlap cell boundaries. Crisp detailed dark medieval illustration, restrained blue rim light, warm skin, no scene or ground shadow, genuine transparent alpha background. No labels, no text, no grid lines, no effects or trails baked into sprite, no opponents. Frame4 is a completed downward strike, NOT another raised-axe pose.",
+  "revisionPrompt": "Use case: precise-object-edit. Fix this heavy-attack sprite sheet for safe slicing into SIX equal cells, preserving its six poses and character. Exact canvas1536x1024, 3columns x2rows; cells512x512. CRITICAL: in the input, the downward axe in bottom-left crosses into the next cell. REMOVE ALL cell overlap. Scale EVERY character WITH their axe down to70% of current apparent size, and reposition the complete figure+axe centrally within its own cell. Maximum full silhouette width380 pixels and maximum full silhouette height410 pixels. Keep at least50 pixels of transparent margin on LEFT AND RIGHT of every cell, and at least35 pixels top/bottom. Align boots to local y460 in EVERY cell. Same physical body scale across all six; overhead axe frames use upper whitespace, low swing frames use right whitespace. Preserve right-facing windup, overhead, peak, downward impact, follow-through, ready recovery in reading order. NO zooming individual frames to fill space, accept lots of transparent empty space. Exact same character, same weapon, same detailed dark painted style. No visible background, no shadows outside sprites, genuine transparent alpha. No labels, gridlines or text. Each cell must contain only its own complete character and axe, nothing from adjacent cells.",
+  "rectanglesUnityBottomOrigin": [
+    [
+      60,
+      512,
+      416,
+      512
+    ],
+    [
+      572,
+      512,
+      416,
+      512
+    ],
+    [
+      1103,
+      512,
+      382,
+      512
+    ],
+    [
+      49,
+      0,
+      480,
+      512
+    ],
+    [
+      585,
+      0,
+      452,
+      512
+    ],
+    [
+      1085,
+      0,
+      426,
+      512
+    ]
+  ],
+  "anchorX": [
+    300,
+    825,
+    1310,
+    240,
+    770,
+    1255
+  ],
+  "footYWithinRowTopOrigin": [
+    490,
+    490,
+    490,
+    438,
+    438,
+    438
+  ],
+  "ppu": "356 / 2.18",
+  "notes": "Generated bitmap copied unchanged. Custom Unity sprite rectangles include axe tips outside nominal grid but exclude neighbors. Frame3 starts at impact0.43; recovery stages normalize against cached injury-scaled recovery. Hero heavy only, not full combat animation set."
+}

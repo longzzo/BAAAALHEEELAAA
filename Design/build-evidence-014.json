@@ -1,0 +1,55 @@
+{
+  "version": "0.14",
+  "capturedAt": "2026-10-11T21:37:53.2273435+09:00",
+  "scope": "현재 코드/빌드/검사 파일 식별. 모든 결과가 정확히 이 빌드에서 재실행됐다는 인증은 아님. 캠페인은 상자 외형 반영 빌드, 이후 근접 안내만 추가됨.",
+  "files": [
+    {
+      "path": "outputs/WindowsBuild/Valhalla_Data/Managed/Assembly-CSharp.dll",
+      "bytes": 240128,
+      "modified": "2026-10-11T21:35:26.0388931+09:00",
+      "sha256": "0DBB1D7D0989150BDBC0063426C98104D6453494D1901A1FDED2D52FC525078B"
+    },
+    {
+      "path": "outputs/WindowsBuild/campaign-results.txt",
+      "bytes": 18507,
+      "modified": "2026-10-11T21:32:19.6858995+09:00",
+      "sha256": "A609E1F0CC0ACC4BE2C61837B3B73A40EB9443E3931AF0022B0A6CA376CCD5F9"
+    },
+    {
+      "path": "outputs/WindowsBuild/smoke-results.txt",
+      "bytes": 1150,
+      "modified": "2026-10-11T21:22:38.2497955+09:00",
+      "sha256": "33CD2A6B4A890BFF02CD40F989BFCC70F03B5A043DF717AC7F32FC3A34B51288"
+    },
+    {
+      "path": "outputs/ValhallaPrototype/Assets/Scripts/Fighters.cs",
+      "bytes": 28978,
+      "modified": "2026-10-11T21:24:30.6215430+09:00",
+      "sha256": "23C8B121D22C0788A77519AB76534B94F2A2BC61BDE856ABE1A5A9CCDDE89D13"
+    },
+    {
+      "path": "outputs/ValhallaPrototype/Assets/Scripts/CampaignHUD.cs",
+      "bytes": 32075,
+      "modified": "2026-10-11T21:34:57.5728441+09:00",
+      "sha256": "1D4E4566C171867E0638F7AD79BD84409B13A9A9C74FC7143AC1631FB0F23B64"
+    },
+    {
+      "path": "outputs/ValhallaPrototype/Assets/Scripts/TattooCombatEffects.cs",
+      "bytes": 6787,
+      "modified": "2026-10-11T21:27:39.9552559+09:00",
+      "sha256": "3D1C92AA6330152703300E5AF602D97FF91CC91A1471D90533812F7A0E695916"
+    },
+    {
+      "path": "outputs/ValhallaPrototype/Assets/Scripts/CombatJourneyProbe.cs",
+      "bytes": 6630,
+      "modified": "2026-10-11T21:16:37.8257285+09:00",
+      "sha256": "CFF69B9F7DEAFD3580C633172AB9DBA78D978CBA3117EB4A1995CBF96E867DB1"
+    },
+    {
+      "path": "outputs/ValhallaPrototype/Assets/Scripts/PaintedCrateVisual.cs",
+      "bytes": 1051,
+      "modified": "2026-10-11T21:31:24.4980604+09:00",
+      "sha256": "797EBB4D63B8B26E206D6DF10557AB12E6F47EBE5BA5A9DAC52CA91947637137"
+    }
+  ]
+}

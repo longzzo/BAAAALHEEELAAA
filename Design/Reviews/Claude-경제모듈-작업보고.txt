@@ -1,0 +1,21 @@
+Implemented `Assets/Scripts/EconomyDomain.cs` with namespace `Valhalla.Campaign`. I did not touch any other file or run Unity.
+
+**What's in there**
+- `ItemStack`, `PlayerProfile` — `[Serializable]`, exact fields/defaults as specified (ownedEquipment=["starter_axe"], tattoos=["thunder"]).
+- `ItemDefinition`, `RecipeDefinition`, `EquipmentDefinition` — plain sealed data classes, exact field names.
+- `EconomyCatalog` — static `Items`/`Recipes`/`Equipment` arrays matching your spec exactly (sell prices, maxStack 99/10, recipes tan_hide/carve_bone/smelt_iron/forge_axe/leather_bracer/healing_salve, equipment starter_axe/iron_axe/runic_axe/leather_bracer/iron_greaves with your multipliers/prices). Added a small internal `Recipe(id)` lookup helper (not in your list but purely additive, doesn't change the required surface).
+- `IProfileStore`, `JsonProfileStore`, `MemoryProfileStore` — only these two classes touch `UnityEngine.JsonUtility`.
+  - `JsonProfileStore`: writes to `path.tmp`, then `File.Replace(tmp, path, path.bak)` (atomic swap + automatic last-good backup). On load failure (missing/corrupt main), falls back to `.bak`; if both fail, the unreadable file is renamed aside to `path.corrupt-<ticks>` (never deleted) and a fresh default profile is returned.
+  - `MemoryProfileStore`: deep-clones via `JsonUtility` round-trip on both `Load()` and `Save()`, so callers can't mutate the stored state by holding a reference.
+  - `EconomyNormalization` (internal): fixes null lists, blank equipped IDs, and guarantees `starter_axe`/`thunder` ownership without touching any other existing data.
+- `EconomyService` — `Count/Add/Sell/Craft/BuyEquipment/Equip/BuyTattoo/Save`, `Profile` (get-only to callers), `event Action Changed`. All mutating paths validate inputs/costs/capacity/funds fully before any state mutation (atomic), then persist via the store and raise `Changed`. Tattoo prices (`thunder=0` already owned, `blood=35`, `ram=40`) live in a private dictionary inside the service since they weren't part of your catalog API.
+- `EconomyValidation.Run()` — returns `List<string>` of `"PASS: ..."`/`"FAIL: ..."` covering: insufficient materials leaves state unchanged, correct craft+sell math, duplicate equipment purchase refusal, unowned-equip refusal, unknown/negative/zero quantity refusal, memory-store clone isolation, JSON save/reload round-trip, and corrupted-file recovery. Temp files it creates are cleaned up afterward.
+
+**Integration notes for Codex**
+- Equipment is never placed into `items`/`ItemStack` and isn't sellable (`Sell("iron_axe", …)` fails with "Unknown item") — matches "crafted gear returns ownership, not sellable stack."
+- Armor "protected limb" isn't a separate field (kept to your exact `EquipmentDefinition` shape) — it's conveyed by id/description: `leather_bracer` = right arm, `iron_greaves` = legs. Consumer code should branch on `id`.
+- For tutorial/progression-only fields (`tutorialComplete`, `bestPart`, `completedRuns`, `deaths`, `scarLevel`, `lastSeed`), mutate `service.Profile.<field>` directly then call `service.Save()` — that persists and also raises `Changed`.
+- `Equip("none")` isn't special-cased (no "none" catalog entry); to unequip armor, set `Profile.equippedArmor = "none"` directly and call `Save()`.
+- Recipe id `"healing_salve"` and item id `"healing_salve"` are separate catalogs reusing the same string by design — no code conflict, just worth knowing for UI labeling.
+
+**One validation caveat**: `EconomyValidation` runs pure C#/`JsonUtility` logic, but I couldn't execute it since I'm not allowed to run Unity. The corruption-recovery test assumes `JsonUtility.FromJson` throws (or returns null) on malformed JSON text — this is consistent with observed Unity behavior but worth confirming once by invoking `EconomyValidation.Run()` from the Editor or a bootstrap script Codex owns.

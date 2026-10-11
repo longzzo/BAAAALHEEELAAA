@@ -1,0 +1,19 @@
+## Summary
+
+**New file `Assets/Scripts/DungeonGate.cs`** (`Valhalla.Campaign` namespace):
+- `DungeonGate : MonoBehaviour` with `IsOpen`, `HitsRemaining`, `LeverX=>-10f`, `GateX=>12f`.
+- `Initialize(CampaignDirector)` builds a dark timber door (3 timber/iron-brace `NordicArt.Block`s) at x12 and a lever marker at x-10, both parented under the gate's own transform so `Destroy(gameObject)` tears everything down — no coroutines/timers to cancel.
+- `TryLever()`: rejects outside `Phase.Combat`, already-open, or while `G.enemies.Count>0` (sets a Korean message); otherwise opens silently with no reinforcements.
+- `Strike(bool heavy)`: rejects light attacks, wrong phase, already-open, or enemies still alive. First heavy hit decrements `HitsRemaining` 2→1 (message: one more needed); second heavy hit opens the gate, disables its own visuals, dims the lever handle (alpha .35) but keeps it active, and calls `director.GateBroken()` once (guarded by an internal `noiseFired` flag, redundant with the `isOpen` gate but kept for clarity/safety).
+
+**Edited `Assets/Scripts/CampaignDirector.cs`**:
+- Added `public DungeonGate gate;` and `private bool roomRewardGranted;`.
+- `LoadRoom()`: resets `roomRewardGranted=false`; spawns the gate only when `run.Room.kind == RoomKind.Approach` (room 0 of each region), after existing enemy/crate/hazard spawns.
+- Room-clear reward now grants `AddLoot` only once per loaded room, guarded by `roomRewardGranted`, so reinforcement waves setting `roomClear=false` again can't double-pay the room reward when they're cleared.
+- `Update()` dungeon branch: hard-clamps the player to x≤11 while the gate exists and is closed (zeroing rightward velocity); shows an `E` lever prompt only once `roomClear` and near `LeverX`; otherwise shows an informational (non-`E`) hint near the gate about heavy-attack-breaks-it-with-reinforcements vs. the quiet lever; the "next route / safe extraction" prompt at x>14 now also requires the gate to be absent or open.
+- `Travel(int)`: now also rejects while `gate != null && !gate.IsOpen`, even if `roomClear` is true.
+- `ClearWorld()`: destroys `gate` and nulls the field.
+- Added `public void GateBroken()`: sets `roomClear=false` and spawns 2 `"raider"` (charger) enemies at x7/x10 via `G.Spawn` + `PaintedCombatVisual.Initialize(true)`, matching existing room-spawn styling exactly (no duplicated art code).
+- `AttackProps` signature extended to `(Vector2 origin, int facing, float reach, bool heavy=false)`, preserving the existing crate-break loop and adding a matching forward-reach/±2-vertical check that calls `gate.Strike(heavy)` when the gate exists and is closed. Per your instructions, I did **not** touch `Fighters.cs`'s `Impact()` caller — Codex still needs to update that call site to pass `heavy`.
+
+No other files were modified; Unity/tests were not run.

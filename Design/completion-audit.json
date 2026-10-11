@@ -1,0 +1,253 @@
+{
+  "purpose": "원본 기획과 사용자 목표의 완료 근거를 추적한다. 자동 검사 통과를 전체 완성으로 간주하지 않는다.",
+  "date": "2026-10-11",
+  "overall": "사용자 전체 플레이 피드백 대기 · 완료 아님",
+  "sources": [
+    "사용자의 활성 목표",
+    "Design/original-gdd.txt",
+    "README.md",
+    "최신 사용자 결정: 문신 우선·자동 부상·입력 방향 우선 대시"
+  ],
+  "requirements": [
+    {
+      "id": "scenes",
+      "requirement": "로비 → 메인 마을 → 최소 세 던전 파트",
+      "status": "씬 통합검사 + 정상전투 세 시나리오 9방 완주·마을 귀환",
+      "evidence": [
+        "Assets/Scenes/Lobby.unity",
+        "Assets/Scenes/MainVillage.unity",
+        "Assets/Scenes/DungeonForest.unity",
+        "Assets/Scenes/DungeonMine.unity",
+        "Assets/Scenes/DungeonSanctum.unity",
+        "Assets/Scripts/CampaignSmokeTest.cs",
+        "Assets/Scripts/CombatJourneyProbe.cs"
+      ],
+      "remaining": "처음 접하는 플레이어의 전체 동선·손맛 확인"
+    },
+    {
+      "id": "village",
+      "requirement": "상인·문신소·장비 상점·튜토리얼·생산·인벤토리",
+      "status": "기초 순환·훈련 및 0.13 문신 발동/해금/공간 안내·방어구 해제 구현·화면 확인",
+      "evidence": [
+        "Assets/Scripts/CampaignDirector.cs",
+        "Assets/Scripts/CampaignHUD.cs",
+        "Assets/Scripts/EconomyDomain.cs",
+        "Assets/Scripts/VillageGuide.cs"
+      ],
+      "remaining": "경제 속도와 시설 안내 사용성 조정"
+    },
+    {
+      "id": "combat",
+      "requirement": "묵직한 강공격·패링·입력 우선 대시·적 자동 바라보기",
+      "status": "0.14 입력버퍼·상태표시 구현, 281개 캠페인/21개 전투 검사 및 제어 화면 확인",
+      "evidence": [
+        "Assets/Scripts/Fighters.cs",
+        "Assets/Scripts/CampaignSmokeTest.cs",
+        "Assets/Previews/combat-readiness.png",
+        "Assets/Scripts/CombatJourneyProbe.cs"
+      ],
+      "remaining": "실제 키 입력을 통한 조작감과 애니메이션 보완"
+    },
+    {
+      "id": "tattoos",
+      "requirement": "몸에 문신을 구성하고 행동을 바꾸는 능력을 사용",
+      "status": "7부위·15종 실제 효과, 2구성 정상 전투 완주 및 충전/소진 상태 표시",
+      "evidence": [
+        "Assets/Scripts/TattooProgression.cs",
+        "Assets/Scripts/BodyRules.cs",
+        "Assets/Scripts/Fighters.cs",
+        "Assets/Scripts/TattooCombatEffects.cs",
+        "Assets/Previews/tattoo-live-state.png"
+      ],
+      "remaining": "부위별 구성의 실제 조작감과 밸런스 조정, 시각 표현 보완"
+    },
+    {
+      "id": "injury",
+      "requirement": "자동 부상·위험과 보상·심각 부위 문신 전체 및 융합 비활성화",
+      "status": "7부위 구현·자동 검증",
+      "evidence": [
+        "Assets/Scripts/BodyRules.cs",
+        "Assets/Scripts/CampaignSmokeTest.cs"
+      ],
+      "remaining": "적·피해 유형별 부상 변형 확장"
+    },
+    {
+      "id": "scars",
+      "requirement": "실패와 심각 부상의 원인이 다음 빌드 선택지를 해금",
+      "status": "화염·거인 유형 및 부위 기억 구현·자동 검증",
+      "evidence": [
+        "Assets/Scripts/DungeonGeneration.cs",
+        "Assets/Scripts/TattooProgression.cs"
+      ],
+      "remaining": "유형별 선택지와 진행 속도의 플레이 밸런스 조정"
+    },
+    {
+      "id": "judgment",
+      "requirement": "명예와 발할라 심사가 전투 방식을 평가",
+      "status": "다요소 심사·후보 해금·저장 구현·자동 검증",
+      "evidence": [
+        "Assets/Scripts/Game.cs",
+        "Assets/Scripts/CampaignHUD.cs",
+        "Assets/Scripts/DungeonGeneration.cs"
+      ],
+      "remaining": "평가 기준과 장기 성장의 플레이 밸런스 조정"
+    },
+    {
+      "id": "actions",
+      "requirement": "박치기·잡기/인간 방패·투척 등 바바리안 행동",
+      "status": "박치기·잡기·인간 방패·적 투척 구현 및 자동 검증",
+      "evidence": [
+        "Assets/Scripts/Fighters.cs",
+        "Assets/Scripts/Grapple.cs"
+      ],
+      "remaining": "전용 동작 애니메이션과 연계 조작감 보완"
+    },
+    {
+      "id": "environment",
+      "requirement": "바바리안식 환경 해결과 시스템적 대가",
+      "status": "관문 두 해법·상자/시체 압력판·운반·환경 투척 구현 및 실행 검증",
+      "evidence": [
+        "Assets/Scripts/DungeonGate.cs",
+        "Assets/Scripts/CampaignDirector.cs",
+        "Assets/Scripts/PressureTrial.cs"
+      ],
+      "remaining": "전용 운반 손 동작과 다층 복합 퍼즐은 남아 있음. 평면 압력판·지레/파괴 관문·물체 투척 검증 완료."
+    },
+    {
+      "id": "generation",
+      "requirement": "절차적 생성 활용",
+      "status": "구현·자동 검증",
+      "evidence": [
+        "Assets/Scripts/DungeonGeneration.cs",
+        "Assets/Scripts/CampaignSmokeTest.cs"
+      ],
+      "remaining": "현재 고정 갈림길 안 시드 배치. 무작위 지형 조립은 구현하지 않았음"
+    },
+    {
+      "id": "design",
+      "requirement": "MDA·SOLID·게임 디자인 패턴 적용 위치 설명",
+      "status": "문서화",
+      "evidence": [
+        "README.md",
+        "Assets/Scripts/EconomyDomain.cs",
+        "Assets/Scripts/TattooSignals.cs"
+      ],
+      "remaining": "기능 확장 시 문서와 코드의 실제 책임 분리를 계속 대조"
+    },
+    {
+      "id": "collaboration",
+      "requirement": "Claude와 실제 공동 작업",
+      "status": "실행 근거 있음",
+      "evidence": [
+        "../../Claude-관문-작업보고.txt",
+        "../../Claude-문신장착-작업보고.txt",
+        "../../Claude-박치기-작업보고.txt",
+        "../../Claude-7부위문신-작업보고.txt",
+        "../../Claude-흉터심사-작업보고.txt",
+        "../../Claude-잡기투척-작업보고.txt",
+        "../../Claude-압력판퍼즐-작업보고.txt",
+        "../../Claude-첫플레이-검토보고.txt",
+        "../../Claude-걷기애니메이션-작업보고.txt",
+        "../../Claude-강공격애니메이션-작업보고.txt",
+        "../../Claude-물체운반투척-작업보고.txt",
+        "../../Claude-전투사운드-작업보고.txt",
+        "../../Claude-적공격애니메이션-작업보고.txt",
+        "../../Claude-프로토타입범위-검토보고.txt"
+      ],
+      "remaining": "후속 작업에서도 파일별 소유와 검증 기록 유지"
+    },
+    {
+      "id": "quality",
+      "requirement": "어두운 중세 바바리안 분위기와 높은 시각 품질",
+      "status": "기존 주인공/적 프레임과 효과음에 목재·철제 상자 외형 및 판독성 안내 추가",
+      "evidence": [
+        "Assets/Resources/Art",
+        "Assets/Scripts/PaintedCombatVisual.cs",
+        "Assets/Previews",
+        "Design/walk-art-provenance.json",
+        "Design/heavy-art-provenance.json",
+        "Assets/Scripts/CombatAudio.cs",
+        "Assets/Scripts/SoundPalette.cs",
+        "Design/audio-provenance.json",
+        "Design/enemy-attack-art-provenance.json",
+        "Assets/Scripts/PaintedCrateVisual.cs",
+        "Design/crate-art-provenance.json",
+        "Assets/Previews/painted-crate.png",
+        "Assets/Previews/crate-affordance.png"
+      ],
+      "remaining": "주인공 일반 공격·박치기·잡기, 적 이동·피격·사망 전용 프레임/관절 애니메이션, 음악·환경음·발소리, 최종 청취 믹싱과 연속 플레이 화면 일관성 보완."
+    },
+    {
+      "id": "armor_choice",
+      "requirement": "부위를 방어구로 보호하거나 노출해 부상 위험과 적응 속도 선택",
+      "status": "해제·재장착·미착용 저장 구현 및 자동 검증",
+      "evidence": [
+        "Assets/Scripts/EconomyDomain.cs",
+        "Assets/Scripts/CampaignHUD.cs",
+        "Assets/Scripts/CampaignSmokeTest.cs",
+        "Assets/Previews/armor-exposure.png"
+      ],
+      "remaining": "현재 오른팔·오른다리 보호대 중심. 모든 부위별 방어구 콘텐츠 확장은 별도 판단"
+    }
+  ],
+  "interpretation": "원본 19절의 추가 차별화 시스템은 제안으로 유지한다. 최신 사용자 결정과 충돌하는 부상 선택창은 완료 대상이 아니며 자동 적용이 우선한다.",
+  "latestEvidenceAudit": {
+    "version": "0.16",
+    "result": "기능 구현·실행물 전달 근거 충족. 문서의 첫 플레이 전체 순환/이해도 확인은 미입증이므로 전체 완료 보류.",
+    "previousTurn": "no progress: same missing user evidence, no new result or actionable defect",
+    "sourceInspected": [
+      "ProjectSettings/EditorBuildSettings.asset",
+      "Assets/Scripts/CampaignSmokeTest.cs:202",
+      "Assets/Scripts/CampaignDirector.cs:310",
+      "Assets/Scripts/BodyRules.cs",
+      "Assets/Scripts/Fighters.cs",
+      "Assets/Previews/enemy-strike.png",
+      "Assets/Scripts/CombatJourneyProbe.cs",
+      "../WindowsBuild/combat-journey-results.txt",
+      "../WindowsBuild/combat-journey-1337-supply-parry.txt",
+      "../WindowsBuild/combat-journey-42-elite-thunder.txt"
+    ],
+    "proven": [
+      "빌드 설정에 Lobby MainVillage Forest Mine Sanctum 포함",
+      "캠페인 검사는 실제 씬 전환과 전리품 정산을 실행",
+      "현재 Windows campaign-results.txt 271 checks 0 failures",
+      "부위별 Has 판정과 자동 적응 코드 확인",
+      "최신 전투 화면의 어두운 배경과 캐릭터/상태 안내 확인",
+      "CombatJourneyProbe: 시드1337 시작 은화 구매 문신 구성으로 정상 공격/적AI/함정 하에 9방 완주·마을 귀환. 보스전13.9초 HP46.8 심각부위1. Windows 종료코드0.",
+      "시드1337 보급로 피의룬+반격 구성:9방 승리·귀환, HP32.4, Blood14 Reprisal11 발동",
+      "시드42 정예 경로 천둥+피의룬+질주:9방 승리·귀환, Windows 종료코드0",
+      "입력 버퍼 0.15초 적용: Windows 캠페인281/0실패 전투21 빌드전규칙12 통과. 후딜 보존·만료·덮어쓰기·방향·메뉴/방/피격 취소·타격정지 입력 검사 포함.",
+      "0.14 HUD: K/F/Shift 실제 상태와 입력 예약 표시. 적 겹침 시 예고 분리. Windows 빌드 성공 및 동일 위치 2적 제어 화면 combat-readiness.png 확인. HUD 변경 후 전체 회귀 재실행 없음.",
+      "0.14 문신 상태: 충전 남은 시간·저장 피해·출정 소진·재사용·부위 침묵을 읽기전용 표시. 8문신 제어 화면 tattoo-live-state.png 확인 및 Windows 빌드 성공.",
+      "상자 시각 보완: 생성 RGBA/프롬프트 보관, 파괴·운반 부모 동작 유지. painted-crate.png 실제 화면 확인. 최신 Windows 캠페인281/0실패 재실행.",
+      "재료/운반 상자 근접 안내 구분 및 잘못된 전체 파괴 안내 정정. 최종 crate-affordance.png 화면에서 캐릭터 비가림 확인, Windows 빌드 성공. 표현 변경으로 전체 회귀 재실행 안 함.",
+      "봉인 보급함 목재 외형·상태 봉인 적용. ResetMotionAnchor 후 실제 Pressed/TryClaim 성공과 supply-vault-art.png 확인. Windows 빌드 성공. 겹친 운반/보급함 안내 분리.",
+      "Claude 0.14 독립 검토 완료. 동일 HUD Rect로 클릭 공격 누출 차단. Windows 캠페인 286/0실패 및 실제 LoadRoom 예약 제거 검사 통과.",
+      "Claude 공동작업 TattooWorldFeedback: 천둥/질주/반격 3형태, 6개 풀, 수평 대시 방향, Has 차단, 방 전환 Clear. Windows 292/0실패, 제어된 3화면 확인.",
+      "사용자 패링/대시/UI 피드백 반영. 방어 버퍼 .25/최종후딜 .12 전환, 접촉 예상/부상 반영 패링 안내, Tab 상세 전투UI. Windows 297/0실패 및 전투21, 화면3개 확인.",
+      "마을 기본 HUD 간소화: 은화/장비/문신수, 첫출정 목적시설/방향, Tab 상세/최근결과. 메모리프로필 첫방문/문신소/펼친화면 확인 및 Windows 빌드 성공. 표시 전용 변경이며 전체297/21 재실행 없음.",
+      "0.15 배포 ZIP과 처음-플레이하기.txt 작성. 272개 항목 SHA256 원본대조 전부일치. 현재필수씬/경제/생성/규칙/설계설명을 소스와 대조. Design/release-015.json 근거와 한계 보관.",
+      "사용자 0.15 평가: 나쁘지 않으나 F/G 손이동 불편. 요청한 C/V로 실행입력/모든안내 변경, Windows빌드 및 272파일 ZIP 해시대조 통과."
+    ],
+    "insufficient": [
+      "두 시드·두 문신 구성·보급/정예 경로의 세 실행을 확인. 동일 자동정책이며 물리 입력·사람의 이해도·전체 밸런스를 입증하지는 않음",
+      "첫 사용자 문신 구성 이해와 연속 조작감 미검증",
+      "자동 파형 검사는 주관적 음질 평가가 아님"
+    ],
+    "nextAction": "사용자가 전체 흐름 이해 여부 또는 막힌 지점을 알려주면 재개. 기존 C/V 빌드와 문서를 보존한다.",
+    "claudeAttempt": "완료: session34047 종료코드0. Claude-014-전투입력표시-검토보고.txt 보관. HUD 클릭 공격 문제 수정, 방 전환 직접 검사 추가. 보급함 문서 지적은 검토 중 수정된 이전 문구이며 시체 근접 안내는 후속 개선.",
+    "documentation": "README 첫 실행/첫 출정 안내를 선두에 추가. 이미 구현된 운반·투척의 오래된 미구현 문구 정정"
+  },
+  "userImprovementPriority": [
+    "강공격·패링·대시 조작감",
+    "문신 능력의 차이와 연출",
+    "캐릭터·마을·던전 시각 품질"
+  ],
+  "feedbackGate": {
+    "condition": "First-player end-to-end village preparation, dungeon return, processing/selling flow and understanding unverified",
+    "consecutiveGoalTurns": 3,
+    "autonomousDeliverablesReady": true,
+    "status": "blocked: same first-player flow feedback absent for three consecutive goal turns",
+    "resolved": "0.15 controls/UI not bad per user; F/G reach complaint addressed by C/V in 0.16"
+  }
+}

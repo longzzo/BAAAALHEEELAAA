@@ -1,0 +1,25 @@
+{
+  "asset": "Assets/Resources/Art/SupplyCrate-v1.png",
+  "source": "OpenAI built-in image_gen",
+  "date": "2026-10-11",
+  "prompt": "Use case: stylized-concept. Asset type: a single transparent 2D side-scrolling dark Norse barbarian game prop sprite. Create ONE closed rugged medieval supply crate, square stout wooden box reinforced with two dark worn iron bands, rivets and a simple iron latch. Front-facing orthographic side-view game prop, only a very shallow visible top edge, NOT isometric, no dramatic perspective. Painted high quality realistic wood grain, weathered oak, subdued brown wood, charcoal iron, restrained pale amber edge highlights from upper left. Matches hand-painted dark medieval action game with realistic barbarian cutout characters. Large readable silhouette at small display size. Entire crate visible, centered, nearly filling square image but leave 8% transparent margin all around. Crate base perfectly horizontal. No floor, no background, no cast shadow outside object, no text, no runes, no logo, no coins, no additional objects. Actual transparent alpha background.",
+  "original": "C:/Users/back1/.codex/generated_images/01a129dc-cfa0-7aa3-9177-2f344552c268/exec-920a74ae-727a-413e-969a-f1e7465c1241.png",
+  "size": [
+    1254,
+    1254
+  ],
+  "format": "RGBA; alpha preserved",
+  "spriteRectBottomOrigin": [
+    85,
+    103,
+    1085,
+    1051
+  ],
+  "boundsMethod": "Read-only alpha >8 inspection; original pixels not modified",
+  "uses": [
+    "BreakableCache at .85 world height",
+    "PressureTrial carryable crate at .78 world height",
+    "PressureTrial supply vault at 1.0 world height with separate state seal"
+  ],
+  "scope": "Visual only; loot, collisions, carrying and flight unchanged"
+}

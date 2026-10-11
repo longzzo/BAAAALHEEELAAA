@@ -1,0 +1,17 @@
+{
+  "version": "0.11",
+  "kind": "original procedural synthesis",
+  "source": "Assets/Scripts/SoundPalette.cs",
+  "playback": "Assets/Scripts/CombatAudio.cs",
+  "authors": "Codex: waveforms and integration; Claude Code: voice pool, tattoo routing, lifecycle",
+  "externalSamples": [],
+  "format": "44100 Hz mono float PCM, runtime-owned AudioClip",
+  "cues": ["LightWindup", "HeavyWindup", "LightHit", "HeavyHit", "Miss", "Dash", "Parry", "Hurt", "Headbutt", "Throw", "PropImpact", "GateOpen", "GateBreak", "Pickup", "RunePower", "RuneGuard", "RuneHeal"],
+  "construction": "Deterministic filtered noise, swept low-frequency impact bodies, inharmonic metal modes, attack and tail envelopes. Never consumes UnityEngine.Random.",
+  "mix": "8 voices; per-cue 55ms cooldown; waveform peak <=0.82; max voice gain 0.135; conservative combined peak bound 0.8856 before device processing. Fixed playback pitch 1.",
+  "preview": "../../CombatSoundPreview.wav",
+  "previewOrder": ["HeavyWindup", "HeavyHit", "Parry", "Hurt", "RunePower", "RuneHeal"],
+  "previewGain": 0.3,
+  "previewGapSeconds": 0.5,
+  "limits": "Synthesized effects rather than recorded foley. Waveform and runtime checks do not establish subjective listening quality. Music, ambient beds, footsteps and final speaker/headphone mix remain unfinished."
+}

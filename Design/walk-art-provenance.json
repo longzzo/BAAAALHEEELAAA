@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-11",
+  "tool": "Built-in image_gen",
+  "reference": "Assets/Resources/Art/BarbarianConcept-v1.png",
+  "asset": "Assets/Resources/Art/BarbarianWalk-v1.png",
+  "source": "C:/Users/back1/.codex/generated_images/01a129dc-cfa0-7aa3-9177-2f344552c268/exec-06bcb44f-17f9-40d2-a57e-6cb98728fe3e.png",
+  "prompt": "Use case: stylized-concept. Asset type: transparent Unity 2D game sprite sheet, SIX consecutive locomotion frames in an exact 3 column x 2 row grid, 1536 x 1024 canvas, each cell512x512. Input image: character identity and rendering reference only. Create the SAME red-haired braided-beard tattooed muscular barbarian in fur cloak, leather bracers, kilt, strapped boots, dark illustrated medieval realism, with the SAME three-quarter side-view facing RIGHT in EVERY frame. Six-frame continuous WALK cycle: top row left-leg forward contact, left support/down, right leg passing; bottom row right-leg forward contact, right support/down, left leg passing. Distinct alternating leg poses, plausible planted foot and lifted trailing foot, no running leap. Consistent anatomy, head size, torso angle, clothes and lighting across all6. Arms bent forward in the same EMPTY gripping pose as reference for a separately overlaid axe: NO weapons in any frame. Keep upper body steady, small natural cloak motion. Orthographic side-scrolling camera, no perspective or viewpoint change. Each figure horizontally centered in its own cell, same scale in all six, top of hair at approximately y8% of cell, bottom grounded boot baseline y92% of cell. All anatomy wholly inside its cell, generous transparent gutters. Body proportions match reference. Transparent RGBA background, no ground, no shadows outside figure, no labels, no gridlines, no numbers, no text, no additional figures. Crisp silhouette and painterly detail readable at small game scale. This is a production animation sheet, NOT a collage of unrelated poses.",
+  "revisionPrompt": "Use case: precise-object-edit. Edit target: the attached six-frame barbarian walk sprite sheet. Keep the character identity, detailed dark illustration style and six walking poses. Fix production sprite layout ONLY: exact 1536x1024 transparent RGBA sheet, 3 columns and2 rows of 512x512 cells. EACH of the six characters must fit FULLY inside its own cell with at least40 pixels empty transparent margin on all four sides. No boot/fur may touch or cross a cell boundary. Reduce each character uniformly as needed. Align torso/pelvis center at x256 within every cell; align lowest planted boot to local y470 in every cell. Consistent total visible character height 420 pixels (hair localy50 to plantedfoot470). Maintain six distinct consecutive alternating left/right walking phases, the same right-facing viewpoint and empty hands for separate axe overlay. Preserve actual alpha transparency, no backdrop or ground shadows. No labels, lines, border, text, new objects. Goal is a clean animation sheet that can be cut into six equal cells with NO bleed from neighboring frames.",
+  "layout": {
+    "width": 1536,
+    "height": 1024,
+    "columns": 3,
+    "rows": 2,
+    "order": "top row then bottom, left to right",
+    "footYTopOrigin": [
+      498,
+      501,
+      500,
+      479,
+      482,
+      479
+    ],
+    "referenceVisibleHeight": 454
+  },
+  "provenance": "Generated in this task; no third-party download. Approved revised image copied unchanged; sprite slicing and pivots are Unity rendering metadata.",
+  "limits": "Hero locomotion only; not a full combat animation set."
+}

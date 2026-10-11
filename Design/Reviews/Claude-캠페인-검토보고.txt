@@ -1,0 +1,25 @@
+I read all nine files (README, Game.cs, Fighters.cs, BodyRules.cs, CampaignDirector.cs, CampaignHUD.cs, DungeonGeneration.cs, EconomyDomain.cs, CampaignSmokeTest.cs, PrototypeBuilder.cs) and cross-checked the focus areas against the 70+ campaign smoke-test assertions and 12 rule-validation checks. Most of the requested systems hold up; I found one concrete design gap and otherwise no evidence of bugs.
+
+## Finding: Trauma "Stage 1 / 손상" tier is mechanically inert
+
+**File/Function:** `Assets/Scripts/BodyRules.cs:26` (`BodyState.Stage`) and `BodyBuild` formulas at `BodyRules.cs:52-56`; displayed in `Assets/Scripts/CampaignHUD.cs:108-111` (`Body()`).
+
+**Issue:** The README documents the trauma progression as three meaningful waypoints: "외상 14 손상 → 30 자동 분노 적응 → 55 심각한 부상." The HUD reinforces this by giving Stage 1 ("손상", 14–29 trauma) its own label, color (gold tint), and a filling progress bar — presented as a distinct combat state, same as Stage 2/3.
+
+However, every gameplay formula that reads body state (`HeavyDamage`, `RecoveryMultiplier`, `MoveMultiplier`, `DashSpeed`, `IncomingMultiplier`, `TattoosEnabled`) branches only on `Stage == 2` or `Stage == 3`. Stage 1 has no distinct branch anywhere — it behaves identically to Stage 0 in every combat/economy calculation. The only visible change at 14 trauma is a label swap and bar fill; no recovery penalty, no incoming-damage change, no move/dash change, no tattoo effect.
+
+**Repro:** Take exactly 14–29 trauma to one limb and observe combat — attack recovery, movement speed, dash speed, incoming damage multiplier, and tattoo activation are all unchanged from the untouched state, while the HUD displays "손상" as if something shifted.
+
+**Severity:** Low–medium. Not a crash or progression blocker, but it's a real mismatch between the documented/UI-communicated injury model and actual mechanics — players will reasonably expect some change at the first named threshold and get none, which undercuts the "몸을 걸고 싸우는 긴장감" design goal called out in the README's own MDA section.
+
+## No finding (reviewed, no evidence of a bug)
+
+- **Input-first dash** (`Fighters.cs:63-70` `Barbarian.Dash`): direction comes from the live horizontal input at keydown, falls back to facing only when input is neutral, and an active dash isn't redirected by crossing an enemy — matches the README and is covered by both smoke tests (`CampaignSmokeTest.cs:45-52`, `Game.cs:206-218`).
+- **Automatic injury / no choice UI** (`BodyRules.cs:30-36`, `Game.choice` usage in `Game.cs`, `CampaignDirector.cs:92` /`:242-269`): `choice` is never set anywhere in the codebase; Fury is applied deterministically inside `AddTrauma` with no pause. Confirmed by both `PrototypeBuilder.Validate()` and the smoke test.
+- **Severe single-limb tattoo disable** (`BodyRules.cs:46-51`): `Has()` gates only on the owning limb's `TattoosEnabled`; opposite-limb tattoos stay active. Matches README and is asserted directly in tests.
+- **Tattoo effects** (Thunder/Blood/Ram triggers in `Fighters.cs`): trigger conditions and Fury-scaling match the HUD's own descriptions in `CampaignHUD.cs:95`/`195`.
+- **Tutorials** (`CampaignDirector.cs` training state machine): step gating, scripted trauma application, reward-once guard, and death-proofing all check out and are exercised end-to-end by the smoke test.
+- **Save integrity** (`EconomyDomain.cs` `JsonProfileStore`): atomic temp-file + `File.Replace` write, backup fallback, and corrupt-file quarantine are implemented and exercised by `EconomyValidation.RunJsonRoundTrip`/`RunCorruptionRecovery`.
+- **Scene transitions** (`CampaignDirector.cs` `EnterVillage`/`StartExpedition`/`Travel`/`NextPart`, `PrototypeBuilder.cs` scene/build-order setup): settle-once guard via `Run.settled`, static `CampaignSession` persisting across `SceneManager.LoadScene`, and build-scene ordering (Lobby as index 0) all check out; no reproducible double-settlement or lost-state path found.
+
+No findings related to missing first-time village guidance, per the stated scope (Codex is actively extending that).

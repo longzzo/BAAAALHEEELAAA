@@ -1,0 +1,19 @@
+Confirmed: closing braces follow correctly (class/namespace), and both new test methods are syntactically complete.
+
+## Summary
+
+**New file `Assets/Scripts/JudgmentRules.cs`** (namespace `Valhalla.Campaign`):
+- `JudgmentEvidence`, `JudgmentResult` data classes exactly as specified.
+- `JudgmentRules.Evaluate(JudgmentEvidence)`: pure, deterministic, clamps all inputs to non-negative, computes `courage`/`dishonor`/`endurance` with the specified formulas, sets `valorCandidate`/`survivorCandidate`, and builds a Korean title (valor → survivor → long-retreat → unproven) and a factual Korean reason string that never contradicts the `survived` flag. Returns only data — no profile/stat mutation.
+- `JudgmentValidation.Run()`: 6 PASS/FAIL checks — brave death still valor-qualifies (and reason says death, not survival), short quiet retreat doesn't block valor, long flight suppresses valor, survivor needs both severe limb **and** ≥5s critical, negative-input robustness, determinism.
+
+**Appended to `Assets/Scripts/BodyRules.cs`**: `TattooPower` enum extended with `Ember=11, GiantCounter=12, Valor=13, PainEcho=14`; nothing else in `BodyRules.cs` changed.
+
+**Appended to `Assets/Scripts/TattooProgression.cs`**:
+- 4 new `TattooSpec` catalog entries (area 1, price 0): `ember` (Chest), `giant_counter` (LeftArm), `valor` (Back), `pain_echo` (Head) — descriptions are plain Korean text only, no effect code.
+- `TattooCatalog.IsUnlocked` gets 4 new conditions: `ember`→`fireScars>=2`, `giant_counter`→`giantScars>=2`, `valor`→`valorMarks>=1`, `pain_echo`→`survivorMarks>=1`.
+- 2 new validation methods added to `TattooProgressionValidation.Run()`: rejection before unlock (all 4), and equip-after-threshold across the 4 different limbs with an explicit check that unrelated `PlayerProfile` counters (coins, scarLevel, bestPart, deaths, completedRuns) are untouched — confirming alternatives, not buffs. All previous 16 checks are untouched.
+
+**Dependency on Codex's side**: `TattooCatalog.IsUnlocked` and the new tests reference `PlayerProfile.fireScars`, `giantScars`, `valorMarks`, `survivorMarks`, which per the task split Codex adds to `EconomyDomain.cs`. This file will not compile until those four fields exist there — that's expected, not an oversight on my end.
+
+No Unity/shell was run; I only read/edited the listed files, so I can't claim build or runtime verification — that's for Codex/you to confirm once the profile fields land.

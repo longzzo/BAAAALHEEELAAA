@@ -1,0 +1,16 @@
+All the pieces are consistent and correctly wired. Here's the summary.
+
+## Changed files
+- `Assets/Scripts/BodyRules.cs` — `BodyState.AddTrauma` now auto-applies `Adaptation.Fury` once per limb the moment `Stage >= 2` is crossed (no popup/pause). `NeedsChoice` retained but documented as compile-compat only.
+- `Assets/Scripts/Fighters.cs` — `Dash(float horizontalInput = 0)`: input sign takes priority, falls back to enemy-tracking `facing` only when input is zero; gaze still follows the enemy independently via `FaceEnemy()` each frame. Keyboard handler now calls `Dash(move)`. `Impact()` now calls `CampaignDirector.AttackProps(...)` so real axe swings break caches in range. `TakeHit` no longer opens a choice; it resolves fatal hits first, then shows either the severe notice or (only when not also going severe in the same hit) the automatic-Fury notice — never both, so a direct stage0/1→severe hit doesn't show a misleading "stage 2" message.
+- `Assets/Scripts/Game.cs` — Removed the 1/2 choice-key handling. `OpenAdaptation`/`Choose` kept only as inert compatibility stubs (never invoked by gameplay; `Choose` is unreachable since `choice` is never set, so it structurally can't apply Endure from any UI). Rewrote the legacy `--smoke-test` coroutine: no more freeze/choice assertions; added checks for automatic Fury on crossing 30 trauma, simulation continuing afterward, direct-to-severe jumps, fatal-hit death, and new dash direction tests (opposite-input and no-input fallback).
+- `Assets/Scripts/CampaignDirector.cs` — Tutorial step 4 wording now reflects the automatic adaptation (no selection screen) and heavy-attack wording explains the Thunder tattoo's purpose. Added `public void TrainSevere()` (E on step 4) invoked from `UpdateTraining()`; removed the dead `Action("adapt")` branch since gameplay no longer dispatches that action.
+- `Assets/Editor/PrototypeBuilder.cs` — `Validate()` rewritten to prove automatic Fury application (no manual `adaptation =` assignment), persistence through further trauma, severe disabling all arm tattoos, independent legs, and that `NeedsChoice` is never required by the rules layer. Updated to 12 passing checks.
+- `Assets/Scripts/CampaignSmokeTest.cs` — Dash tests now cover explicit opposite-input and no-input fallback (with the required extra frame for `velocity` to update). Tutorial section now asserts automatic adaptation without pausing and calls `D.TrainSevere()` instead of `G.Choose`. Expedition injury section replaced the `Choose(Endure)` call with an automatic-adaptation-without-pause assertion. Added a real `Impact()`-driven cache-break check before the room's existing manual `cache.Break()` loop. Elite/unsafe-extraction coverage untouched.
+
+## Key decisions
+- Fury adaptation lives in `BodyState.AddTrauma` (not in `Fighters.cs`), keeping BodyRules.cs as the single authority for injury rules, per existing SOLID note.
+- Fatal hits are resolved before any adaptation/injury notice is computed — "fatal hit wins" cleanly, with no stray messaging.
+- Kept `Adaptation.Endure` and the `Choose`/`OpenAdaptation`/`choice` field only as inert API surface for any remaining HUD reference; none of HUD/CampaignHUD actually calls `Choose`, so this is dead but harmless.
+
+I haven't run Unity/tests — per your instructions, verification is on Codex's side.

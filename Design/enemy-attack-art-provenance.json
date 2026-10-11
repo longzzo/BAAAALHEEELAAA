@@ -1,0 +1,73 @@
+{
+  "tool": "built-in image_gen",
+  "referenceImages": [
+    "Assets/Resources/Art/Draugr-v1.png",
+    "Assets/Resources/Art/Axe-v1.png"
+  ],
+  "prompt": "Use case stylized-concept. Production transparent game sprite atlas. Reference image1 is the established draugr enemy identity, image2 is its axe reference. Create six full-body frames of this SAME undead Norse warrior executing one deliberate two-handed axe attack toward screen RIGHT. Match realistic painted dark fantasy style, weathered iron helmet, pale decayed skin, grey beard, fur shoulders, chainmail, ragged brown cloth, boots, amber eyes. Preserve identity, costume, scale and right-facing side/three-quarter view across every frame. Axe must be visibly held in two hands and included in all frames. Canvas landscape 1536x1024, exactly 3 columns by 2 rows of equal 512x512 cells. No lines, numbers, text, border, floor, shadow, scenery or glow backdrop: genuinely transparent alpha. Each full figure PLUS entire weapon stays inside its own cell with 25 pixels safe transparent padding. Ground foot baseline y=480 within each cell, consistent pelvis x=256. Body height about 340 pixels; weapon raised fits above head. Six poses reading left-to-right then next row: 1 tense anticipation axe low, 2 raising axe with torso winding back, 3 fully raised overhead clearly telegraphing imminent strike, 4 forceful downward forward strike with axe head low to right, 5 low follow-through crouch, 6 recovering toward starting guard. Show a readable weight shift and shoulder/arm motion; feet planted and complete, no severed body, no motion blur or trails. Keep same camera and consistent scale. This is an animation sheet, not six different characters. Prioritize complete weapon containment and aligned feet.",
+  "revisionPrompt": "Edit this six-frame transparent draugr attack sprite sheet. Preserve exactly the six poses, identity, costume, axe, right-facing direction and painted rendering. Correct ONLY packing and scale: keep canvas1536x1024 with exactly3x2 cells512square. Uniformly reduce every whole figure plus weapon to about85% current size and arrange each fully inside its own cell, with at least30pixels clear alpha margin all around. No pixel of a weapon or boot may cross x512/x1024/y512. All six foot baselines must be y475 in each local cell (global y475 and987). Keep each pelvis horizontally centered x256 within its cell so stance aligns. Maintain SAME body scale across all six frames, including crouched followthrough. Transparent alpha background with no painted backdrop, no shadows, no text or grid.",
+  "generatedOriginal": "C:/Users/back1/.codex/generated_images/01a129dc-cfa0-7aa3-9177-2f344552c268/exec-d1cf16bc-6449-4e44-9bdf-ead875ae94e3.png",
+  "generatedFinal": "C:/Users/back1/.codex/generated_images/01a129dc-cfa0-7aa3-9177-2f344552c268/exec-09f95e4d-ab3b-4e1a-b52b-aaff2e6d05e5.png",
+  "asset": "Assets/Resources/Art/DraugrAttack-v1.png",
+  "canvas": [
+    1536,
+    1024
+  ],
+  "rectsBottomOrigin": [
+    [
+      0,
+      512,
+      512,
+      512
+    ],
+    [
+      512,
+      512,
+      512,
+      512
+    ],
+    [
+      1024,
+      512,
+      512,
+      512
+    ],
+    [
+      35,
+      0,
+      505,
+      512
+    ],
+    [
+      562,
+      0,
+      478,
+      512
+    ],
+    [
+      1060,
+      0,
+      476,
+      512
+    ]
+  ],
+  "anchorX": [
+    250,
+    768,
+    1280,
+    250,
+    768,
+    1280
+  ],
+  "footYLocalTopOrigin": [
+    489,
+    489,
+    490,
+    439,
+    439,
+    439
+  ],
+  "pixelsPerUnit": "360 / 2.18",
+  "alpha": "RGBA; 70.43% fully transparent pixels; original alpha retained",
+  "limits": "Six discrete frames, no rigging. Enemy archetypes share sheet with existing tint/scale. Visual timing reads existing AI state only."
+}

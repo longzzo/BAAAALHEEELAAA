@@ -1,0 +1,27 @@
+No changes needed — it's only ever instantiated in the `sceneRole == Legacy` branch now, so it naturally stays scoped to legacy behavior. The integration is complete.
+
+## Summary
+
+I integrated the already-substantial `CampaignDirector`/`EconomyDomain`/`DungeonGeneration`/`CampaignHUD` (built by Codex) into a playable campaign, touching only my owned files:
+
+**Game.cs**
+- `Awake()` branches on `sceneRole`: Legacy keeps starter tattoos + `GameHUD` + `Phase.Camp`; other roles add `CampaignHUD` and `CampaignDirector` (calling `Initialize()` after player/camera setup), skipping legacy tattoos.
+- `Update()` gates Enter/R run-restart and Esc pause-toggle and wave/`SpawnWave` auto-progression behind `sceneRole == Legacy`; choice keys (1/2) and hitstop resume logic stay global.
+- `Choose()` now calls `CampaignDirector.I?.Action("adapt")`.
+- `Start()` redirects to the `AshenThreshold` scene via `SceneManager.LoadScene` before running the smoke-test coroutine if the current scene isn't Legacy, preserving `--smoke-test`.
+
+**Fighters.cs**
+- `Barbarian`: added `CanMove` (Combat or Village) vs `CanAct` (Combat only), so village locomotion works but attack/dash/parry stay gated to combat (training included, since it sets `Phase.Combat`).
+- `Impact()` applies `CampaignSession.WeaponMultiplier` only outside Legacy, and fires `Action("heavy-hit")` on a successful heavy hit.
+- `TakeHit()`: dodge/parry now fire `Action("dodge")`/`Action("parry")`; added a `training` floor (hp never drops to 0) and skips trauma/adaptation entirely for incidental (non-`ignoreDefense`) training damage, while `ignoreDefense` forced hits (debug tools, tutorial) always bypass armor's `TraumaMultiplier` so threshold teaching is exact.
+- `Enemy`: elites move at .55× speed, hit 1.5× harder, resist light stagger like bosses, take less knockback, render 1.3× scale with a gold eye tint, and `TakeHit` now calls `CampaignDirector.I?.EnemyDefeated(this)` on death.
+
+**NordicArt.cs** — `World()` now reads `Game.I.sceneRole`: Forest/Mine get new distinct procedural dark environments (`ForestFloor`/`MineFloor`) with optional future plate override; Village tries `Art/Village-v1` (falls back to the old fjord look until the plate is copied in); Legacy/Lobby/Sanctum keep the old `AshenThreshold-v1` painted backdrop.
+
+**PrototypeBuilder.cs** — added `CreateCampaign()` (menu **"Valhalla/Create campaign"**, i.e. `createcampaign`) building Lobby/MainVillage/DungeonForest/DungeonMine/DungeonSanctum + legacy AshenThreshold, each with the matching `Game.sceneRole`, with Lobby first in build settings. `Build()` now runs `CreateCampaign()` and builds all six scenes. The original `CreateScene()` menu is preserved for legacy-only scene creation.
+
+**Caveats**
+- `Build()` now produces a full multi-scene campaign build (not just the legacy exe) — flag this since the README's documented build command will behave differently.
+- "Builder CreateScene must create Lobby/MainVillage/..." was implemented as a new `CreateCampaign()` method rather than repurposing `CreateScene()`, to keep the legacy single-scene workflow intact for smoke tests; let me know if you'd rather I collapse them into one.
+- `Village-v1`/`DungeonForest-v1`/`DungeonMine-v1` art assets aren't present yet — code falls back to the old fjord plate (village) or new procedural dressing (forest/mine) until those are copied in.
+- I didn't touch `CampaignHUD.cs`, `CampaignDirector.cs`, or `DungeonGeneration.cs` per ownership boundaries; I didn't run Unity or build.

@@ -1,0 +1,13 @@
+Confirmed — all fields are public and only read, no gameplay/Fighters.cs changes made.
+
+## Summary
+
+Extended `Assets/Scripts/PaintedCombatVisual.cs` only, no changes to `Fighters.cs`:
+
+- Added `enemyAttackFrames`, `hasEnemyAttackCycle`, `enemyAttackFrame` plus public `HasEnemyAttackCycle`/`EnemyAttackFrame` (-1 inactive).
+- `Initialize` loads `Resources/Art/DraugrAttack-v1` for enemy instances only, slicing it into 6 equal 512×512 cells (3×2, same row/col convention as the existing walk sheet) as a placeholder until Codex calibrates real rects/pivots/ppu like the heavy sheet; missing atlas leaves `hasEnemyAttackCycle=false` so the old cutout pose is used untouched.
+- Added `EnemyAttackActive` (Combat phase, `Alive`, `!Captured`, `stun<=0`, `state` 1–3) and `UpdateEnemyAttackCycle()`: state 1 splits windup (elite 1.05/boss 1/charger .95/normal .8) into thirds → frames 0/1/2; state 2 → frame 3; state 3 splits recovery duration (boss 1.2/otherwise .95) into halves → frames 4/5. Hides `axePivot` only while active, forces identity rotation/scale so no extra lean/bob/scaling is added and parent `visual` scale in `Enemy.Update` is untouched.
+- Wired the new update into both the hitstop (`Frozen`) and normal `LateUpdate` branches alongside `UpdateHeavyCycle`, so hitstop freezes on the selected pose and menu pause (already returns early) holds it exactly.
+- `OnDisable` and inactive/cancel paths restore `originalSprite` and re-show `axePivot`; new sprites are added to `ownedSprites` for existing `OnDestroy` cleanup (no texture destruction).
+
+Hero heavy-attack logic, timings, and all gameplay/hit rules are unchanged.

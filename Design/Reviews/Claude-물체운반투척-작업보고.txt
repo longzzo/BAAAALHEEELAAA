@@ -1,0 +1,21 @@
+## Summary
+
+I extended `Assets/Scripts/PressureTrial.cs` only, adding lift/drop/throw on top of the existing crate-push/corpse-shove puzzle. No other files were touched.
+
+**New public API:**
+- `bool Carrying`, `bool Flying`
+- `bool TryLift()` — gated on `hero.CanAct`, grounded, not Attacking/Dodging/Parrying/Headbutting, not `grapple.Holding`/`Thrown`, left arm `Stage<3`, not already carrying/flying, internal cooldown `<=0`. Picks the nearest crate/corpse within 1.6 horizontal / 2 vertical on either side, locks `carryDirection = hero.facing`, attaches at `hero + dir*.9, +.5`.
+- `bool DropHeld()` — requires `CanAct` + `Carrying`; lands at `hero.x + dir*.9` clamped to `[-16,10]`, refreshes the plate, sets a 0.25s cooldown.
+- `bool ThrowHeld()` — requires `CanAct` + `Carrying` + left arm not severe; launches a locked-direction 0.5s flight (`speed 10`, arc `CenterY+.8+sin(t·π)*1.2`). A swept check (±0.7 horizontal, ydiff<2 vs ground) picks the first living, non-captured enemy; flight state is cleared (`LandWeight`) *before* calling `Enemy.TakeHit(24, …)` so a kill's `AddRemains` reentry never fires mid-flight-state or mid-enumeration. Otherwise lands on duration/boundary.
+- `void CancelCarry()` — releases held/flying weight straight to the ground, no damage; used by `OnDisable`/`OnDestroy` and by `Update()` whenever phase leaves Combat or the left arm becomes severe.
+
+**Protections added to existing logic (behavior-preserving):**
+- `Shove`, `PushCrate`, and `RefreshState`'s plate check now skip the currently held/flying transform via a shared `HeldOrFlying` guard, so a carried/thrown weight never counts for the plate, walking push, or heavy-attack shove.
+- `AddRemains`'s 3-cap eviction now skips the held/flying transform when picking the oldest to evict.
+- Draugr-specific `Sprite.Create` output (not NordicArt's shared `Square` sprite) is now explicitly destroyed alongside its GameObject on cap-eviction, and swept for cleanup in `OnDestroy`, avoiding a sprite leak on scene teardown.
+
+**Risks / things Root should double check:**
+- I used `hero.CanAct` for "Game Combat && !Frozen" per Barbarian's own definition — matches intent but confirm no divergent combat-only gating is expected here.
+- The vertical collision/plate reference for throw collisions uses the fixed `CenterY` baseline (consistent with how `Strike`/`Shove` already use a fixed reference) rather than a per-frame arc height; acceptable since the arc stays within the ±2 window the whole flight.
+- On `ThrowHeld`, the weight visually "snaps" from the carried offset (`hero.y+.5`) to the arc baseline (`CenterY+.8`) on the first flight frame — intentional per the specified fixed arc formula, but flag in case a smoother blend is wanted later.
+- Root must wire G/E to `TryLift`/`DropHeld`/`ThrowHeld`, enforce the `Carrying` move×0.55 multiplier and action exclusions, and call `CancelCarry()` on accepted hits/room/reset as noted — none of that is implemented here since this file owns only state/visuals, not input or Fighter restrictions.

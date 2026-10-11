@@ -1,0 +1,29 @@
+Both files are complete and self-consistent.
+
+## Report
+
+**Files changed:** `Assets/Scripts/BodyRules.cs`, `Assets/Scripts/TattooProgression.cs` only.
+
+### BodyRules.cs
+- `BodyPart`: `RightArm=0, Legs=1(=right leg, legacy name), Head=2, Chest=3, Back=4, LeftArm=5, LeftLeg=6`. No alias duplicates.
+- `TattooPower`: existing `Thunder..Frost=0..5` unchanged, appended `Roar=6, SecondWind=7, Recall=8, Countermark=9, Landing=10`.
+- `BodyBuild`: added fields `head, chest, back, leftArm, leftLeg` alongside preserved `arm, legs`.
+  - `public static readonly BodyPart[] Parts` (7 entries), `public IEnumerable<BodyState> States` (7 states, iterator).
+  - `Get(BodyPart)` is an explicit switch over all 7 cases; unknown values throw `ArgumentOutOfRangeException`.
+  - `Has(TattooPower)` unchanged logic, now generic over any part via `Get`.
+  - `HeavyDamage`, `RecoveryMultiplier`, `DashSpeed` untouched (right-arm/right-leg only, as specified).
+  - `MoveMultiplier` = original right-leg factor × new left-leg factor (`.75`/`.9`/`1`).
+  - `IncomingMultiplier(part)`: local Fury ×1.2 unchanged, plus chest-only stage multiplier (×1.25 Stage3 / ×1.1 Stage2).
+  - New: `HeadbuttDamage`, `HeadbuttCooldownMultiplier`, `ParryWindow`, `JumpSpeed`, `HonorGainMultiplier` exactly per spec.
+  - `Reset()` now resets all 7 states.
+
+### TattooProgression.cs
+- Added 5 catalog specs (`roar`/Head, `second_wind`/Chest, `recall`/Back, `countermark`/LeftArm, `landing`/LeftLeg), all area 1, normal-purchase priced (45/60/90/50/45), `unlockHint=""` so `IsUnlocked` returns true by default (no new gating branch needed — only `echo`/`frost` special-cased).
+- `Capacity(part)` untouched; RightArm=2 others=1 already generalized.
+- Added 6 new checks to `TattooProgressionValidation.Run()` (existing 9 untouched, in original order): independent per-part areas across all 5 new limbs/tattoos with isolated unequip, JSON round-trip of ownership+equip for all 5 new tattoos, empty-loadout persistence for a new tattoo, `BodyBuild.Parts`/`Get`/`States` mapping + out-of-range throw, `Reset()` across all 7 parts, and a `Has()` gating test using `ScriptableObject.CreateInstance<TattooDefinition>` (destroyed immediately after) proving severe head trauma disables only the head tattoo while chest stays active.
+
+### Caveats for Codex
+- Actual combat/HUD wiring (headbutt radius+stagger, second_wind proc, recall death-save, countermark charge window, landing shockwave, Fury-tier bonus numbers like head radius 4 / chest dmg 10 / back HP 20 / left-arm +22 / left-leg dmg 14) is **not implemented** — only body-state gating and multipliers/specs exist. Combat code should read `BodyBuild.Has(TattooPower.X)` plus the relevant `adaptation`/`Stage` before applying any of these numbers, per the existing one-gate rule.
+- `Recall` severe-back disable and the "once per expedition" / honor-cost bookkeeping must live in combat/session state (not in `BodyBuild`); no permanent-death-immunity claim was added here.
+- No `PlayerProfile` fields were added; per-expedition state (e.g. Recall's one-use flag, Countermark's pending charge) belongs in Codex's combat/session owner, not persisted profile.
+- I did not touch Fighters.cs/CampaignHUD.cs/EconomyDomain.cs/etc. — only read EconomyDomain.cs to confirm API signatures used in tests.

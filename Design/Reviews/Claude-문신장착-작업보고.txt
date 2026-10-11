@@ -1,0 +1,21 @@
+This looks correct and complete. The implementation is done.
+
+## Summary
+
+Files changed (only these two, as scoped):
+
+**`Assets/Scripts/EconomyDomain.cs`**
+- `PlayerProfile`: added `equippedTattoos`, `tattooLoadoutVersion`, `armScars`, `legScars`.
+- `EconomyNormalization`: on `tattooLoadoutVersion <= 0`, runs a one-time migration that equips owned tattoos (in owned order) up to each `BodyPart`'s area capacity, using `TattooCatalog`/unlock rules, then sets version to 1. Every normalize pass also runs `CleanLoadout`, stripping duplicate/unknown/unowned/locked/over-capacity entries from `equippedTattoos` — this runs independent of version so later unlock/ownership changes can't leave stale equips, but it never adds anything back (satisfies the "intentional empty loadout" requirement).
+- `EconomyService.BuyTattoo`: now driven by `TattooCatalog` instead of the old private price dictionary; checks unlock state via `TattooCatalog.IsUnlocked`; grants ownership on purchase and auto-equips only if area is available (otherwise tells the player to free space), all in Korean.
+- Added `EconomyService.EquipTattoo`/`UnequipTattoo`: validate known/owned/unlocked/capacity/already-equipped/not-equipped states; any rejection returns before mutating `Profile` or calling `Commit()`.
+
+**`Assets/Scripts/TattooProgression.cs`** (new)
+- `TattooSpec` and `TattooCatalog` exactly matching the shared contract: 6 entries (thunder/blood/ram/reprisal/echo/frost) with Korean descriptions, `Capacity` (RightArm 2, Legs 1), `Find`, `IsUnlocked` (scar-threshold gating for echo/frost), `UsedArea`.
+- `TattooProgressionValidation.Run()` — 9 isolated `MemoryProfileStore`/temp-`JsonProfileStore` checks covering: v0 migration (coins/inventory preserved + 3-tattoo equip within area), intentional empty loadout surviving save/load, atomic overflow rejection, unequip→equip swap, ownership check, locked-scar purchase rejection, threshold unlock + area-respecting equip, leg/arm independence, and JSON round-trip of scar counters + loadout. Temp files use GUID names and are deleted only if created by the test.
+
+Decisions/notes:
+- `TattooPower.Reprisal/Echo/Frost` are referenced on the assumption Codex appends them to the existing enum in `BodyRules.cs` — I did not touch that file.
+- `BodyPart`/`TattooPower` are used unqualified without a `using Valhalla;` directive, matching the existing convention in `CampaignDirector.cs`/`DungeonGeneration.cs` (nested-namespace lookup already relied upon there).
+- I did not touch `CampaignSession.BuildBody()` (in `DungeonGeneration.cs`) even though it currently reads `Profile.tattoos` rather than `Profile.equippedTattoos` — that's Codex's file; wiring combat to the new loadout is out of my scope per the task boundaries.
+- I have not run/compiled these changes (no Unity/shell access here); Codex should run the existing suites plus `TattooProgressionValidation.Run()`.

@@ -1,0 +1,19 @@
+Reviewed AGENTS.md, README.md, and all four scripts in full. Found one concrete, reachable defect; everything else I checked (loot dedup, pause gating, severe-left-arm cancellation, first-hit flight collision math) held up under inspection.
+
+## Defect: thrown grapple captive is vulnerable to the player's own attack/dash mid-flight, bypassing the guaranteed landing-damage contract
+
+**Mechanism:**
+- `Grapple.Holding` (`Grapple.cs:17`) is `held && held.Alive && held.Captured`. Once `Throw()` runs (`Grapple.cs:54-64`), `held = null`, so `Holding` becomes `false` immediately — even though the thrown body (`thrown`, exposed via `Thrown` at `Grapple.cs:19`) is still mid-air for up to `FlightDuration = .6f` (`Grapple.cs:9`).
+- `Barbarian.Holding` (`Fighters.cs:37`) is `grapple.Holding || CarryingProp`, so during that flight window it's `false`. This unblocks `Attack()` (`Fighters.cs:93-95`), `Dash()` (`Fighters.cs:103-105`), `Parry()`, `Headbutt()`, and jump — all of which only gate on `Holding`.
+- The thrown enemy stays in `Game.I.enemies` (only removed in `Enemy.TakeHit` on death) with `Captured` still `true` until it lands. `Barbarian.Impact()`'s hit loop (`Fighters.cs:207-215`) and the Ram-tattoo dash hit loop (`Fighters.cs:187-193`) never check `enemy.Captured`, so the player's own normal/heavy attack (or Ram dash) can land on their own still-flying projectile within the ~0.2s it's close enough (it starts right at the player and only travels at `FlightSpeed = 12` over `FlightDuration = .6f`, well within heavy reach `2.45`).
+- If that stray hit kills the thrown body, `Grapple.Update()`'s branch `if (!thrown.Alive) { thrown = null; flightTime = 0; }` (`Grapple.cs:119-124`) silently clears flight state without ever calling `EndFlight()` (`Grapple.cs:162-174`).
+
+**Why it's a real defect, not just a quirk:** README explicitly guarantees "빗나가도 착지 피해는 적용합니다" (even on a miss, landing damage is still applied). In this path, neither the 24-damage collision hit nor the 20-damage landing hit from `EndFlight` ever fires — the captive is simply destroyed by the player's unrelated attack, with no burst/sound and no damage delivered to whatever it would have hit. That directly violates the documented always-applies-landing-damage guarantee.
+
+**Fix direction (not applied, per instructions):** either extend `Barbarian.Holding` to also cover `grapple.Thrown != null`, or have `Impact()`/the dash hit loop skip `enemy.Captured` targets.
+
+## Review limitations
+- `DungeonGate.cs`, `BodyBuild`/`BodyState`, `TattooCombatEffects`, and `Enemy` spawn/room-kind data weren't in scope, so I couldn't fully verify exact coordinate constants (e.g., lever/gate X) to rule out every possible overlapping-input scenario in `CampaignDirector.Update()`. I did confirm the gate (`RoomKind.Approach`) and `pressureTrial` (`RoomKind.Salvage`) are mutually exclusive per room, which rules out the specific double-E-trigger scenario I initially suspected there.
+- No compiler/runtime execution was performed; this is a static read-through only.
+
+Codex resolution: Captured enemies are excluded from melee, dash and tattoo target selection, with Enemy.TakeHit also guarding Captured. Grapple releases Captured before shield/landing damage, so those paths remain active. Added a follow-up attack regression followed by actual flight and landing. Final Windows campaign 255 checks / 0 failures, legacy combat 21 checks passed. The player remains free to act after throwing.

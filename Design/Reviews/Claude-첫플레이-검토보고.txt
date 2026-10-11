@@ -1,0 +1,41 @@
+I read all seven files. README/AGENTS.md give design intent (the "tattoos are the primary ability, intentional empty loadouts must be preserved, panel visits gate the onboarding guide"); the actual bugs are in `CampaignDirector.cs`. All three below are logic/text correctness issues, not art/animation scope (the README's own "아트와 한계" section already and correctly scopes animation/rigging/throw-puzzle depth as separately unfinished — unrelated to these).
+
+**1. Dead "E" prompt in the first-time village guide (`CampaignDirector.Update()`, lines 100–106)**
+```csharp
+if (!CampaignSession.Economy.Profile.tutorialComplete && Mathf.Abs(G.player.transform.position.x - 12) < 3) interactPrompt = "E · 훈련장에서 전투를 배우기";
+foreach (var s in stations)
+    if (Mathf.Abs(G.player.transform.position.x - s.x) < 2.5f) { interactPrompt = "E · " + s.name; if (Input.GetKeyDown(KeyCode.E)) Open(s.panel); return; }
+```
+The beginner-specific hint uses radius `3`, the actual action (and the generic overwrite) uses `2.5f`. Between 2.5 and 3 units from x=12, the HUD tells a brand-new player to "press E," but E does nothing, and the message is then immediately overwritten anyway once in the 2.5 band (since `"훈련장"` is already in `stations`), so it's effectively dead code even when it does display.
+**Fix:** move the beginner line after the `foreach` loop and match its radius to `2.5f`:
+```csharp
+foreach (var s in stations) { ... }
+if (!CampaignSession.Economy.Profile.tutorialComplete && Mathf.Abs(G.player.transform.position.x - 12) < 2.5f) interactPrompt = "E · 훈련장에서 전투를 배우기";
+```
+
+**2. Tutorial text assumes an equipped tattoo that can legitimately be absent (`CampaignDirector.TutorialInstruction`, `BeginTraining()`, `TrainSevere()`)**
+Nothing in `Open()` (lines 151–160) blocks visiting the Tattoo shop before ever training, and `EconomyService.UnequipTattoo` (EconomyDomain.cs:653–671) lets a first-time player deliberately empty the right-arm slot (which README/AGENTS explicitly says must be preserved, not auto-filled). `BeginTraining()` then does `G.body = CampaignSession.BuildBody();`, which reflects that *real* (possibly empty) loadout. Step 1's instruction — "강공격을 명중시키고 장착한 문신의 효과를 확인하세요" — and `TrainSevere()`'s notice "문신이 침묵했다" become false/misleading: there is no tattoo to observe or silence.
+**Fix:** give training its own guaranteed demo tattoo without touching the saved loadout, e.g. build the training body via a dedicated path that force-includes Thunder for the session only:
+```csharp
+G.body = CampaignSession.BuildBody(); G.body.ForceEquipForTraining(TattooPower.Thunder); // training-only, not persisted
+```
+`FinishTraining` already calls `CampaignSession.BuildBody()` again on exit, so the player's real/empty loadout is restored untouched.
+
+**3. Stale "received materials" message on tutorial replay (`CampaignDirector.FinishTraining(bool completed)`, lines 331–341)**
+```csharp
+if(completed && !CampaignSession.Economy.Profile.tutorialComplete) { ...grant materials...; CampaignSession.lastReport="훈련 완료 · 제작 연습용 재료를 받았습니다...";}
+...
+message=completed?CampaignSession.lastReport:"훈련을 종료했습니다. 다시 도전할 수 있습니다.";
+```
+On a repeat "훈련 다시 하기" (explicitly supported per README), the reward block is skipped (correctly — no duplicate materials), but `message` still falls back to the stale `CampaignSession.lastReport` from the original completion, falsely telling the player they received materials again.
+**Fix:**
+```csharp
+bool firstCompletion = completed && !CampaignSession.Economy.Profile.tutorialComplete;
+if (firstCompletion) { ...grant materials...; CampaignSession.lastReport="..."; }
+...
+message = completed ? (firstCompletion ? CampaignSession.lastReport : "훈련을 다시 완료했습니다.") : "훈련을 종료했습니다. 다시 도전할 수 있습니다.";
+```
+
+All three are necessary-correctness fixes confined to `CampaignDirector.cs`; nothing here touches art/animation scope.
+
+Codex resolution: all three findings addressed. Dedicated temporary Thunder/Ram training body preserves personal empty loadout; station E hint now uses the same range as the actual action; first-completion and replay messages distinguished. Also moved exit button below grab instructions after visual inspection. Windows campaign 226 PASS / 0 failures, legacy 21 PASS, build rules 12 PASS. Screenshot: Assets/Previews/training-loan.png.

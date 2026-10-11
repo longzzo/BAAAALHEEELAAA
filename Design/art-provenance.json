@@ -1,0 +1,17 @@
+{
+  "tool": "Built-in Imagegen",
+  "nanoBananaUsed": false,
+  "assets": [
+    {
+      "path": "Assets/Resources/Art/AshenThreshold-v1.png",
+      "purpose": "Runtime background",
+      "prompt": "Use case: stylized-concept. Asset type: production background plate for a high-quality 2D side-scrolling dark Norse barbarian action game, landscape 16:9, 2048x1152 or larger. Create an exquisite hand-painted cinematic illustration of an abandoned Viking temple threshold at blue hour: immense weathered carved stone pillars at the far left and far right, distant craggy fjord mountains and ruined longhouse silhouettes, cold mist in horizontal layers, sparse warm amber braziers, wet slate and aged wood, subtle ancient nonverbal carvings. Sophisticated dark fantasy art direction, confident painterly shapes, exquisite material detail, muted slate blue and desaturated teal with restrained amber accents. Orthographic side-on stage composition for actual gameplay, absolutely NOT an isometric view and NOT a road receding toward camera. A perfectly level unobstructed walkable stone platform crosses the entire width at 77 percent down the image, seen from the side, with a dark rock cutaway filling the bottom 23 percent. Middle playable band from 45 to 75 percent height must be relatively quiet, moderately light mist behind future dark character silhouettes, readable action space. Far structures create depth without blocking this band. Top 15 percent is understated dark sky, suitable for an overlaid game HUD. Light comes from upper left, rim lighting and fog separation. No characters, no creatures, no weapons, no lettering, no UI, no logo, no watermark. Not pixel art, not photorealistic, not generic glossy mobile art. A cohesive premium painted 2D game environment, carefully composed, no central obstruction."
+    },
+    {
+      "path": "Assets/Resources/Art/BarbarianConcept-v1.png",
+      "purpose": "Start screen portrait / character concept only, not rigged gameplay sprite",
+      "prompt": "Use case: stylized-concept. Asset type: high-resolution transparent character sprite for a 2D side-scrolling dark Norse barbarian game. A single full-body male barbarian berserker, massive muscular build, rugged red-brown braided beard, shaved sides and tied-back hair, weathered face, exposed muscular right arm with subtle icy-blue tattoo runes, fur mantle over back shoulder, battered leather kilt with bronze belt buckle, dark leather boots and wrapped lower legs, one shoulder protected by a modest iron plate. Strictly side-view facing RIGHT, readable heroic silhouette, grounded wide combat-ready stance, both feet visible at same baseline. Empty hands held forward near waist/chest as if gripping a separate two-handed axe, but DO NOT include any weapon. Arms visibly separated from torso by small negative spaces. Premium hand-painted 2D game illustration, sculptural painterly shading, restrained detailed textures, bold silhouette, not photo-realistic, not chibi, not pixel art, no glossy mobile look. Cool blue rim light from upper left with subtle warm reflected light, muted bone/leather/rust palette, enough local contrast to read at small game size. Full figure centered with safe empty margins, absolutely isolated on true transparent alpha background, no shadow plane, no scenery, no text, no watermark. Only one character and no alternate views."
+    }
+  ],
+  "notes": "Generated for this project. No purchased external assets. Preserve source files. Character rig and animation still required."
+}

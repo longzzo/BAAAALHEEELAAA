@@ -1,0 +1,21 @@
+## Report
+
+Created `Assets/Scripts/PressureTrial.cs` only — `Valhalla.Campaign.PressureTrial : MonoBehaviour`, no other files touched, no shell/Unity run.
+
+**Implemented per spec:**
+- `Initialize(owner, material)` builds crate (x=-2, center y=-.85), plate (x=7, floor y=-1.35), vault (x=9, center y=-.85) as `NordicArt.Block` children of this transform (cascades on `Destroy`).
+- Crate push: tracks `previousPlayerX`; computes a contact point `crateX - dir*.9` and snaps the crate to `playerX + dir*.9` (clamped `[-16,10]`) when the player's position crosses that point — handles both gradual walking and single-frame tunneling (dash/teleport) without a Rigidbody.
+- `AddRemains(Enemy)`: skips boss/elite, clamps x, caches as a plain visual (not the real `Enemy`), caps at 3 with oldest destroyed first.
+- `Strike(origin, facing, reach, heavy)`: no-op if `!heavy`; shoves crate and each remains 2.5 units in `facing` if in front/reach (same `-.25f` leniency convention as `AttackProps`/`DungeonGate.Strike`) and `|Δy|<2`; one pass per call so each object is shoved at most once.
+- `Pressed` recomputed every frame (and after Strike/AddRemains) from crate or any remains within `.75` of `PlateX`; releases re-close it automatically (not latched).
+- `TryClaim()` checks Combat, `!Frozen`, `!Claimed`, `Pressed`, hero within 2 of vault x=9, `Grounded`; on success latches `Claimed`, calls `owner.Drop(new Vector2(9,-.8f), material, 3)` once, and fires the only Korean `Notice` in the file (success-only, per spec).
+- `ResetMotionAnchor()` is public for teleports/tests; `Update()` calls it every frame while `Frozen` so resuming doesn't register a giant fake push, and skips all logic when scene phase isn't Combat.
+- Plate/vault glow: gold when active (`Pressed`), ice when `Claimed`, otherwise a dark idle tint — readable active/inactive states, no gameplay/damage coupling.
+
+**Concerns for the coordinating side (root wiring):**
+1. I guessed vault visual proportions/colors and the dark idle tint since no exact palette was specified beyond "gold/ice active vs dark inactive" — worth a visual pass once placed in a real room.
+2. `AddRemains` takes the enemy's position *at call time*; if death-wiring destroys the `Enemy` and calls this in the same frame after `TakeHit` already moved it via knockback, confirm the position read is still pre-destroy (it is, since `Enemy.TakeHit` calls `Destroy(gameObject)` but position is read synchronously before that in the same call).
+3. Crate push only resolves crate-vs-player x; it does not resolve crate-vs-remains or remains-vs-remains overlap (no physics), so a crate pushed onto a corpse's exact x will visually overlap it — acceptable for a 2D cutout prototype but flagging in case root expects separation.
+4. `TryClaim`/plate detection use only x-distance; if the Salvage room places the plate off the main ground line, y is never checked against the plate (only against Strike's `reach` check for shoving) — fine given the stated flat corridor layout, but assumes vault/plate stay on the same floor row as the crate.
+
+Codex integration: CampaignDirector/CampaignHUD/CampaignSmokeTest wired. Reviewed and fixed remote crate dragging, grounded contact, pause guards, dead-only remains, read-only state. Added fallen draugr visual reuse. Final Windows campaign 218 PASS / 0 failures, legacy combat 21 PASS; viewed Assets/Previews/pressure-supplies.png.

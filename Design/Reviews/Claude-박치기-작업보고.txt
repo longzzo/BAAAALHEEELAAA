@@ -1,0 +1,29 @@
+The implementation is complete and the file structure checks out syntactically. The rest of the `Enemy` class is unchanged, which matches the task scope.
+
+## Summary
+
+Implemented the headbutt action entirely within `Assets/Scripts/Fighters.cs` (`Barbarian` class):
+
+**New public API**
+- `bool Headbutt()` — launches the action (Q key), returns success/failure
+- `bool Headbutting => headbuttTimer > 0`
+- `public float headbuttTimer, headbuttCooldown`
+
+**Behavior**
+- Gated by `CanAct`, `hp > 4`, and no concurrent Attack/Dash/Parry/Headbutt or active cooldown; rejects with no state change otherwise.
+- Costs 4 HP immediately on launch, bypassing `IncomingMultiplier`/armor/trauma/invulnerability — a miss still costs.
+- `FaceEnemy()` locks a target/direction at launch; `Headbutting` is now included in the Update's `FaceEnemy(keepTarget)` call and the idle-facing fallback, so direction holds for the full 0.42s.
+- At the 0.16s windup mark, `HeadbuttImpact()` finds the single closest living enemy in forward `x∈[0,1.8]`, `|y|<1.6`, deals a flat 8 damage (no weapon scaling), then explicitly calls `enemy.Stun(.8/.55/.35)` based on ordinary/elite/boss — bypassing `TakeHit`'s internal short-stagger rejection for elites/bosses.
+- Burst/sound/0.055s hitstop fire only when a target is actually hit; nothing plays on a miss.
+- Does not call `AttackProps`, Thunder, Echo, or the `"heavy-hit"` tutorial event. Blood-on-kill still triggers normally since it lives in `Enemy.TakeHit`.
+- Movement multiplier 0.2 while headbutting; jumping disabled during it.
+- Attack/Dash/Parry now also reject while `Headbutting`.
+- A normal accepted hit (the `TakeHit` branch that already zeros `attackTimer/dashTimer/parryTimer`) now also zeros `headbuttTimer`, canceling a pending headbutt before impact with no refund.
+- `ClearDelayedAttacks()` and the non-Combat/Village early-return path in `Update()` now also zero `headbuttTimer` (covers `LoadRoom`/room-transition cancellation). `ResetPlayer()` additionally clears `headbuttCooldown`.
+- `headbuttCooldown` ticks down alongside the other cooldowns in the ordinary Combat/Village `Update()`, using `Time.deltaTime`, so it freezes correctly when `Game.I.Frozen`.
+- Legacy procedural `Animate()` adds a forward lean (peaks at windup, eases out) and tucks the weapon to `-150°` while headbutting.
+
+**Concerns / things to flag**
+- I didn't add any sound/VFX on launch or during windup — per the spec's "only on hit" wording I kept launch completely silent; confirm that's the intended feel.
+- Tuck angle (`-150°`) and lean magnitude (`0.4`) are my own stylistic choices for the legacy visual since no exact values were specified — Codex's painted-view adapter can diverge freely.
+- I have not run Unity or any tests, as instructed; this is unverified beyond manual code review.

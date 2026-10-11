@@ -1,0 +1,9 @@
+{
+  "version": "0.16",
+  "artifact": "../BAAAALHEEELAAA-0.16-Windows.zip",
+  "sha256": "0B8C41B12F573B42B147804857EB98725DA764CB883CFAACD5742C41818A40BA",
+  "assemblySha256": "127DB08F7D436E3992ED34840DF6C616E6743C7AB4ED08995104C15BE03DE244",
+  "entries": 272,
+  "hashMismatches": 0,
+  "change": "C parry / V grab-throw, labels and guide aligned; build passed; no behavior test rerun"
+}

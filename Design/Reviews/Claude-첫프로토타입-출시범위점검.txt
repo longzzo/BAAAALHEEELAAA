@@ -1,0 +1,42 @@
+# 발할라 프로토타입 릴리스 범위 감사 보고
+
+## 조사 범위
+직접 읽은 소스: `AGENTS.md`, `README.md`, `Design/original-gdd.txt`, `Design/completion-audit.json`, `Fighters.cs`, `BodyRules.cs`, `Game.cs`, `CampaignDirector.cs`, `EconomyDomain.cs`, `DungeonGeneration.cs`(=CampaignSession 정의), `TattooCombatEffects.cs`, `ProjectSettings/ProjectVersion.txt`, `ProjectSettings/EditorBuildSettings.asset`. **미검토**: `Grapple.cs`, `PressureTrial.cs`, `DungeonGate.cs`, `CampaignHUD.cs`, `TattooProgression.cs`, `PaintedCombatVisual.cs`, 씬 `.unity` 파일 본문, `Claude-*-보고.txt` 원문. 이 범위 밖 코드의 결함 가능성은 배제하지 않습니다.
+
+## (A) 명시적 1차 프로토타입 요구사항 — 검사 범위 내에서는 결함 미발견
+
+코드 레벨에서 사용자의 최신 규칙 4개를 직접 확인했으며, 모두 README/AGENTS.md의 서술과 일치합니다.
+
+- **강공격 즉시 고정 후딜**: `Fighters.cs:126-129` `Attack()`는 호출 즉시 `attackTimer=attackLength`를 설정, 홀드-차지 로직 없음. 요구사항 충족.
+- **적 지향 + 입력 우선 대시**: `Fighters.cs:104-121` `FaceEnemy()`는 이동 입력과 무관하게 가장 가까운 생존 적을 자동으로 바라봄. `Dash()`(`Fighters.cs:132-142`)는 `horizontalInput`이 있으면 그 방향, 없으면 `facing`으로 폴백. 요구사항 충족.
+- **자동 부상, 선택 없음**: `BodyRules.cs:32-37` `AddTrauma()`가 Stage 2 진입 시 팝업/일시정지 없이 `Adaptation.Fury`를 자동 적용. `CampaignDirector.cs:342-345`의 주석도 동일하게 명시.
+- **심각 시 해당 부위 전체 문신(패시브/융합 포함) 비활성, 출정 단위**: `BodyRules.cs:86-91` `Has()`가 모든 효과의 단일 게이트이며 `TattooCombatEffects.cs` 전 메서드가 예외 없이 이를 통과(라인 40-43은 침묵 전환 시 대기 중 효과도 즉시 폐기). `DungeonGeneration.cs:110-121` `BuildBody()`가 출정/마을 진입마다 새 `BodyBuild`를 만들어 다음 출정에서만 복구됨.
+
+**씬/마을 구조**: `EditorBuildSettings.asset`에 Lobby→MainVillage→DungeonForest/Mine/Sanctum 5개 씬 확인. `CampaignDirector.cs:31-37` 5개 시설(대장간/문신소/상인/장비상점/훈련장) + 소지품 패널 모두 존재. 생산(Craft)·판매(Sell)·루팅(WorldPickup/AddLoot) 경로는 `EconomyDomain.cs`/`CampaignDirector.cs`에서 실동작 확인. **Unity 6**: `ProjectVersion.txt`에 6000.6.0f1 명시. **MDA/SOLID/패턴 문서화**: README 전역에 버전별 MDA 문단 + 전용 "MDA와 설계 원칙"/"SOLID 적용"/"게임 패턴" 절 존재.
+
+이 범위에서는 "명백히 누락되었거나 깨진" 1차 요구사항을 찾지 못했습니다. 다만 이는 제가 읽은 7개 스크립트 한정 결과이며, 미검토 파일(Grapple/PressureTrial/DungeonGate/HUD 등)에 결함이 없다는 뜻은 아닙니다.
+
+## (B) 미검증 핵심 릴리즈 동작 — README/오디트가 이미 스스로 인정
+
+- **물리적 키/마우스 입력을 통한 실제 손맛**: 292/21 테스트는 `player.Attack()`, `Dash()` 등 메서드 직접 호출(`Game.cs:176-240` SmokeTest 참조) + `--combat-journey`의 0.15초 간격 자동 정책(`CombatJourneyProbe.cs`, README 0.13절)입니다. `Input.GetKeyDown` 경로 자체의 자동화 검증은 없습니다. → **조작감 1순위 항목 자체가 미검증**.
+- **12/15종 문신의 전용 월드 연출**: `AGENTS.md:3`에 명시, 천둥/질주/반격 3종만 전용 형태 존재.
+- **첫 사용자의 이해도/연속 플레이 체감**: completion-audit.json `insufficient` 항목에 명시적으로 기재.
+- **전투 사운드 최종 믹싱/음악/환경음, 적·주인공 일반공격/박치기/잡기 전용 프레임**: README "아트와 한계" 절에 남은 작업으로 명시.
+
+이 항목들은 "증거 부족"일 뿐 "구현 실패"는 아니므로 (A)로 격상하지 않았습니다.
+
+## (C) 선택적 전체 게임 확장/폴리시 (1차 프로토타입 범위 아님)
+
+- 다층 복합 환경 퍼즐, 무작위 지형 조립(현재는 고정 분기+시드 배치)
+- 전체 부위별 방어구 콘텐츠 확장(현재 오른팔/오른다리 중심)
+- 적응 기억·상처 슬롯 경쟁·고통 부채·복수 표식·명예 계약 등 GDD 19절 "추가 차별화 제안" — `completion-audit.json:193`에서 "제안으로 유지, 완료 대상 아님"이라고 명시적으로 선을 그어 둠
+
+## 우선순위 반영 평가
+
+AGENTS.md/README가 선언한 "조작 → 문신 연출 → 시각" 순서는 0.14 내부 작업 순서(입력 버퍼 → 상태 HUD → 문신 상태표시 → 월드 피드백 → 상자 비주얼)와 일치합니다. 순서 자체의 역행은 발견되지 않았습니다.
+
+## 다음 가장 중요한 구체적 수정 권고
+
+**현재 최우선 미해결 항목은 (B)의 "조작감 1순위 자체가 자동화 테스트로 입증되지 않는다"는 점입니다.** 292/21 테스트와 `--combat-journey`는 모두 메서드 직접 호출/자동 정책이며, 실제 키보드·마우스 입력 경로(`Fighters.cs:161-168`의 `Input.GetKeyDown` 분기, 0.15초 입력 버퍼)가 사람이 누를 때 어떻게 느껴지는지는 코드로 증명할 수 없는 영역입니다. 다음으로 유의미한 작업은 **추가 자동 테스트나 문신 비주얼 확장이 아니라, 사용자가 직접 빌드를 플레이해 K/F/Shift 입력 버퍼(0.15초)와 적 자동 대면이 "묵직함"과 "누락감 없음" 사이에서 실제로 어떻게 느껴지는지 피드백을 주는 것**입니다. 이 피드백 없이는 1순위 목표(조작감) 자체가 "구현됨"과 "검증됨" 사이에 머물러 있습니다.
+
+완료 선언은 하지 않습니다. 위 (B) 피드백 또는 다음 작업 지시를 주시면 그에 따라 진행하겠습니다.

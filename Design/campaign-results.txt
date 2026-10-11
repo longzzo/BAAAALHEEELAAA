@@ -1,0 +1,100 @@
+PASS: Lobby boots campaign director
+PASS: Lobby enters MainVillage scene
+PASS: First village shows the owned starting tattoo accurately
+PASS: Village has forge, trader, tattoos, equipment and training
+PASS: New profile starts with combat training guidance
+PASS: Village transaction panel pauses simulation
+PASS: Closing transaction resumes simulation
+PASS: Craft fails without materials and leaves coins unchanged
+PASS: Craft tan_hide consumes raw_hide and grants tanned_leather
+PASS: Sell tanned_leather pays correct coins and clears stack
+PASS: Duplicate equipment purchase is refused
+PASS: Equipping unowned gear is refused
+PASS: Unknown item, negative quantity and zero quantity are all refused
+PASS: Memory store isolates unsaved mutations via deep clone
+PASS: JSON store round-trips crafted inventory and processing guidance
+PASS: Corrupted save recovers to a usable default profile
+PASS: Version 0 migration preserves coins and inventory
+PASS: Version 0 migration equips owned thunder+blood+ram within area limits
+PASS: Intentionally emptied loadout survives save/load without auto re-equip
+PASS: Equip rejected when the body part has no remaining area
+PASS: Unequipping frees area so an alternative tattoo can be equipped
+PASS: Equipping an unowned tattoo is refused
+PASS: Buying a scar-locked tattoo before the threshold is refused and leaves coins untouched
+PASS: Threshold-unlocked tattoo can be bought without owning area, then equipped once space is freed
+PASS: Leg tattoo capacity and unlocks are independent from the arm loadout
+PASS: JSON round-trip preserves scar counters and tattoo loadout
+PASS: Tutorial observes movement and jump
+PASS: Facing locks to enemy regardless of previous movement direction
+PASS: Dash with no input falls back to facing toward the enemy
+PASS: Crossing enemy turns gaze without reversing the active dash
+PASS: Dash honors opposite horizontal input over facing toward the enemy
+PASS: Expanded parry accepts attack at 0.32 seconds after input
+PASS: Heavy impact advances tutorial
+PASS: Real parry callback advances tutorial
+PASS: Dodge callback applies automatic adaptation without pausing
+PASS: Advancing training proceeds to severe tattoo loss
+PASS: Training completion returns to peaceful village
+PASS: Finishing combat training guides player to inventory
+PASS: Opening inventory advances to processing guidance
+PASS: Failed crafting and sale never advance onboarding
+PASS: First training grants material kit
+PASS: Training reward cannot be duplicated
+PASS: Actual material processing advances to sale guidance
+PASS: Crafted armor protects only the equipped limb
+PASS: Confirmed sale advances to tattoo preparation
+PASS: Reviewing tattoos and gear leads to departure guidance
+PASS: Seed reproduces encounter and resource layout
+PASS: Different seed changes generated layout
+PASS: Three dungeon parts have reachable branching routes
+PASS: Village enters seeded forest expedition
+PASS: Completed village guidance survives save roundtrip
+PASS: Unsafe extraction is refused while enemies remain
+PASS: Risk route spawns the catalogued iron sentinel
+PASS: Iron sentinel drops three metal scraps
+PASS: Real Impact call breaks a crate within axe reach
+PASS: Expedition injury auto-adapts without pausing the simulation
+PASS: Consuming salve heals HP without clearing trauma
+PASS: Dungeon part 0 loads its actual scene
+PASS: Part 0 encounter 0 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Part 0 encounter 1 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Part 0 encounter 2 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Injury state persists across rooms/parts
+PASS: Dungeon part 1 loads its actual scene
+PASS: Part 1 encounter 0 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Part 1 encounter 1 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Part 1 encounter 2 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Injury state persists across rooms/parts
+PASS: Dungeon part 2 loads its actual scene
+PASS: Part 2 encounter 0 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Part 2 encounter 1 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Part 2 encounter 2 unlocks only after kills
+PASS: Monster/cache drops enter expedition inventory
+PASS: Injury state persists across rooms/parts
+PASS: Third guardian ends expedition in victory
+PASS: Victory settles once and returns to village
+PASS: Repeated settlement cannot duplicate rewards
+PASS: Safe return retains collected materials
+PASS: New expedition resets trauma and restores owned tattoos
+PASS: Fatal campaign hit cannot leave selection paused
+PASS: Death keeps half of new loot and preserves stored materials
+PASS: Profile persists progression through scene changes
+PASS: Death records the actual damaged limb without granting opposite scar
+PASS: Repeated settlement cannot duplicate scar progress
+PASS: Repeated arm deaths unlock Echo rather than a universal buff
+PASS: Equipped Reprisal converts successful parry into frontal damage
+PASS: Severe arm disables Reprisal and preserves Frost on legs
+PASS: Frost turns a successful dodge into nearby damage and stagger
+PASS: Frost triggers at most once within a single dash
+PASS: Severe leg disables Frost's reactive effect
+PASS: Equipped Echo produces a delayed second heavy strike
+PASS: Severe arm cancels a pending Echo effect before it fires
+FINISHED: 99 checks; 0 failures

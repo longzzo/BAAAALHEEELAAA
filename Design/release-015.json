@@ -1,0 +1,25 @@
+{
+  "version": "0.15",
+  "artifact": "../BAAAALHEEELAAA-0.15-Windows.zip",
+  "sha256": "E605E4C0294820D9C7BBC4DD0F57941563907ADC888E780E6A2419B904C0692F",
+  "assemblySha256": "36D3192B3753BA0E5C686AF05F50BDADFA4B4C2DEA877333D7A5A49370D42220",
+  "packageEntriesVerified": 272,
+  "hashMismatches": 0,
+  "guide": "../WindowsBuild/처음-플레이하기.txt",
+  "coverage": {
+    "scenes": "EditorBuildSettings: Lobby, MainVillage, DungeonForest, DungeonMine, DungeonSanctum enabled; CampaignSmokeTest executes transitions",
+    "village": "CampaignDirector stations plus EconomyService crafting/selling/equipment/tattoos/profile; existing 297 checks cover live scene callbacks and domain behavior",
+    "combat": "Fighters fixed heavy windup, input-first locked dash, automatic facing, .25 defensive buffer and final .12 recovery transition; 297 checks include new transition/threat-cue paths",
+    "tattoosInjury": "BodyRules seven parts, 15 catalog powers, Has gate; automatic stage2 and stage3 silence; CampaignSmokeTest covers effects and disabling",
+    "design": "README MDA/SOLID/pattern sections inspected against EconomyService/IProfileStore/SeededDungeonGenerator/TattooSignals",
+    "collaboration": "Claude implementation/review reports retained, latest scope audit and world-feedback implementation read",
+    "visuals": "Latest compact/expanded village and dungeon screenshots visually inspected, generated character/backgrounds and existing animation integration preserved"
+  },
+  "validationLimits": [
+    "Windows campaign297 and combat21 passed before final view-only village HUD change; final display change checked by build and editor screenshots, not another full campaign run",
+    "Older normal-combat journey probes proved three 9-room runs on 0.13; do not label those as testing 0.15 physical input",
+    "Package verification proves file integrity, not independent clean-machine compatibility",
+    "User feedback prompted 0.15 response/UI changes; revised human feel and readability not yet accepted or observed"
+  ],
+  "overallGoal": "active: await actual feedback on the revised control/UI experience before claiming overall completion"
+}

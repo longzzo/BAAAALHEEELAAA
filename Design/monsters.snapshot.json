@@ -1,0 +1,92 @@
+{
+  "source": "https://app.notion.com/p/2d207d7ed66b40008aad8b6a17be9997",
+  "date": "2026-10-11",
+  "note": "Design snapshot only, not runtime import. Implemented rows checked against Fighters.cs, CampaignDirector.cs and DungeonGeneration.cs. Draft rows remain proposals.",
+  "monsters": [
+    {
+      "key": "draugr",
+      "name": "망자의 전사",
+      "status": "현재 구현",
+      "hp": 82,
+      "damage": 12,
+      "moveSpeed": 2,
+      "windup": 0.8,
+      "targetParts": [
+        "오른팔"
+      ],
+      "dropProposal": "구현: 지역 재료 1개 (숲 가죽 / 광산 철 / 성소 뼈)",
+      "version": "0.2"
+    },
+    {
+      "key": "raider",
+      "name": "돌진 약탈자",
+      "status": "현재 구현",
+      "hp": 66,
+      "damage": 13,
+      "moveSpeed": 3.3,
+      "windup": 0.95,
+      "targetParts": [
+        "다리"
+      ],
+      "dropProposal": "구현: 거친 가죽 1개",
+      "version": "0.2"
+    },
+    {
+      "key": "bonebreaker",
+      "name": "뼈를 부수는 자",
+      "status": "현재 구현",
+      "hp": 320,
+      "damage": 19,
+      "moveSpeed": 1.7,
+      "windup": 1.0,
+      "targetParts": [
+        "오른팔",
+        "다리"
+      ],
+      "dropProposal": "구현: 망자의 성소 뼛조각 5개",
+      "version": "0.2"
+    },
+    {
+      "key": "ash_hound",
+      "name": "재의 사냥개",
+      "status": "설계 초안",
+      "hp": 48,
+      "damage": 9,
+      "moveSpeed": 4.2,
+      "windup": 0.5,
+      "targetParts": [
+        "다리"
+      ],
+      "dropProposal": "초안: 거친 가죽 1–3",
+      "version": "미반영"
+    },
+    {
+      "key": "iron_sentinel",
+      "name": "철갑 파수꾼",
+      "status": "현재 구현",
+      "hp": 150,
+      "damage": 18,
+      "moveSpeed": 1.1,
+      "windup": 1.05,
+      "targetParts": [
+        "오른팔"
+      ],
+      "dropProposal": "구현: 녹슨 쇳조각 3개",
+      "version": "0.2"
+    },
+    {
+      "key": "frost_shaman",
+      "name": "서리 주술사",
+      "status": "설계 초안",
+      "hp": 60,
+      "damage": 11,
+      "moveSpeed": 1.3,
+      "windup": 1.1,
+      "targetParts": [
+        "가슴"
+      ],
+      "dropProposal": "초안: 서리 핵 0–1 (아이템 별도 설계 필요)",
+      "version": "미반영"
+    }
+  ]
+}

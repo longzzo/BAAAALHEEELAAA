@@ -1,0 +1,26 @@
+/Library/
+/Temp/
+/Obj/
+/Logs/
+/UserSettings/
+/.vs/
+*.csproj
+*.sln
+*.slnx
+*.user
+*.pidb
+*.pdb
+
+# Builds and local tools
+/Build/
+/Builds/
+/.idea/
+/.vscode/
+/MemoryCaptures/
+/Recordings/
+*.log
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks

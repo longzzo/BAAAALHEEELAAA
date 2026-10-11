@@ -1,0 +1,10 @@
+Created `Assets/Scripts/CombatAudio.cs` only.
+
+**Integration notes**
+- Needs root-supplied `static class SoundPalette { AudioClip Create(CombatCue cue); }` — compiles only once that exists.
+- Call sites wire in via `combatAudio.Play(CombatCue.X)` at existing event points (attack windup/hit/miss, dash, parry, hurt, headbutt, throw, prop impact, gate open/break, pickup); `SetMenuPaused(bool)` should be driven by whatever already flips menu-pause state (not hitstop, not `AudioListener.pause`).
+- `TattooPower → CombatCue` mapping is my judgment call from `BodyRules.cs`: `Blood`/`Valor` → `RuneHeal` (life restore), `Reprisal`/`Frost`/`SecondWind`/`Recall`/`Countermark`/`GiantCounter` → `RuneGuard` (parry/dodge/tank-triggered), everything else (`Thunder`, `Ram`, `Echo`, `Roar`, `Landing`, `Ember`, `PainEcho`) → `RunePower` (offensive payoff). Worth a sanity check against intended feel.
+- Voice stealing picks any idle `AudioSource` first, else the one with the oldest `Time.unscaledTime` dispatch — fine for 8 voices but will audibly cut a long clip under sustained AoE bursts; flag if that's undesirable.
+- Per-cue cooldown (0.055s unscaled) is keyed per `CombatCue`, so e.g. two different `RunePower`-mapped tattoos firing in the same frame will still collapse to one voice hit — intentional per spec, but means some dense rune-stacking moments will be quieter than expected.
+- `OnDestroy` destroys only the clips this component generated; nothing else is touched.
+- No references to `SoundPalette` members beyond `Create`; if root's actual signature differs (e.g. takes extra params), this file will need a one-line adjustment on your side.

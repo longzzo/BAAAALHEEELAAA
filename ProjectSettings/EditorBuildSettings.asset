@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: 7593782493873474db5cbeaa2d164353
+  - enabled: 1
+    path: Assets/Scenes/MainVillage.unity
+    guid: 6e07d798fdcf1a54caa596132897a7da
+  - enabled: 1
+    path: Assets/Scenes/DungeonForest.unity
+    guid: 524afc3a02eface43b7a6b054c60cea0
+  - enabled: 1
+    path: Assets/Scenes/DungeonMine.unity
+    guid: b925a1cc2df662f4584d9a5e315d0a48
+  - enabled: 1
+    path: Assets/Scenes/DungeonSanctum.unity
+    guid: d0ef9304959b3014fb309dd6f67cd8e1
+  - enabled: 1
+    path: Assets/Scenes/AshenThreshold.unity
+    guid: 8f4fa45002359d54ebbbde2a9116c890
+  m_configObjects: {}
